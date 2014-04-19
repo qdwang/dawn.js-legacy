@@ -7,7 +7,7 @@ LexParser is a parser to tokenize the code script
 ```
 'var foo = function(){};'
 
-----> LexParser with lex syntax definition ---->
+    ----> LexParser with lex syntax definition ---->
 
 [
     ['VarDecl', 'var'],
@@ -23,7 +23,7 @@ LexParser is a parser to tokenize the code script
 ```
 
 **Sample**
-```js
+```
 script = 'var foo = function(){};'
 lex_syntax = { // The key order will affect the result
     'VarDecl': /var/,

@@ -10,7 +10,7 @@ Predefined Arguments -> Plugin1 ------------------> Plugin2 ... -> Arguments(com
 ```
 
 **Sample**
-```js
+```
 args = {arg1: [lex], arg2: 'script'}
 flow = new Flow(args)
 flow.append([Plugin1.flow, Plugin2.flow, Plugin3.flow])

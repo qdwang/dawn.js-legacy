@@ -35,7 +35,7 @@ Then
 ```
 
 **Sample**
-```js
+```
 ObjectA = {Node1: []}
 ObjectB = {Node2: []}
 ObjectC = {Node3: []}

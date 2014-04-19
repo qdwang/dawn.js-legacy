@@ -13,7 +13,7 @@ Syntax Parser is a parser to generate syntax tree from lex list
     'End'
 ]
 
-----> LR1 Parser with grammar syntax definition ---->
+    ----> LR1 Parser with grammar syntax definition ---->
 
 ```
 {
@@ -44,7 +44,7 @@ Syntax Parser is a parser to generate syntax tree from lex list
 ```
 
 **Sample**
-```js
+```
 lex_list = [
         ['A', 'a'],
         ['B', 'b'],
