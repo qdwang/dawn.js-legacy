@@ -1,9 +1,9 @@
 dawn.js
 =======
-bring intelligence to coding
+**bring intelligence to coding**
 
 
-dawn.js is a powerful toolkit to help with coding.
+dawn.js is a powerful toolkit to help with coding
 
 ## Built in Features
 
@@ -14,7 +14,7 @@ dawn.js is a powerful toolkit to help with coding.
 
 ## Things available to do
 
-* Understand the codes
+* Helping to understand the codes
 * Real autocompletion specific to scopes and objects
 * Autocompletion between different languages (like working Javascript with JAVA in Android)
 * Accurate refactor
