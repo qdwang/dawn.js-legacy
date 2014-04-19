@@ -23,7 +23,7 @@ lex_syntax =
     'Id': /[a-zA-Z_$][\w_$]*/
 
 
-grammer = """
+grammar = """
 Program -> S+
 S -> SGO StmtEnd | StmtEnd
 SGO -> Obj | StmtEnd | Assignment
@@ -61,7 +61,7 @@ parseFlow = (script, cursor_pos) ->
             lex_syntax: lex_syntax
             cursor_pos: cursor_pos
 
-            grammer: grammer
+            grammar: grammar
             start_stmt: ['Program']
             sync_lex: ['StmtEnd', 'ParseFail', 'S']
             mix_map: new self.MixMap

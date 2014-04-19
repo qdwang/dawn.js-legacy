@@ -37,7 +37,7 @@ LR1.SyntaxParser.Mix.mixer = ->
 ST.SymbolTable.Mix.mixer = ->
     mm.arrange.apply mm, arguments
 
-table = new LR1.SyntaxTable js_lang.grammer, ['Program'], ['ProgramEnd']
+table = new LR1.SyntaxTable js_lang.grammar, ['Program'], ['ProgramEnd']
 state = new LR1.SyntaxParser lp.lex_list
 
 

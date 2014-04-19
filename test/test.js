@@ -46,11 +46,11 @@
 
   G = "S -> E\nE -> [b g] (A g)* A (B x)* | A A+ B | A d+ B | B (, opt)* | A [b g] [b g] | (A | B | d C*)+ | B [A | c]\nA -> a b\nB -> b\nB -> A | ( A + A )\nA -> B * B\nA -> c";
 
-  bnf = new BNF.BNFGrammer(G);
+  bnf = new BNF.BNFGrammar(G);
 
   bnf.makePlainBNF();
 
-  stringEqual(bnf.bnf_grammer_pairs, "[[\"S\",[\"E\"]],[\"E\",[\"A\",\"A E!htp2inec+\",\"E!htbz8sdr+ A\",\"E!htbz8sdr+ A E!htp2inec+\",\"E!ht1ife46 A\",\"E!ht1ife46 A E!htp2inec+\",\"E!ht1ife46 E!htbz8sdr+ A\",\"E!ht1ife46 E!htbz8sdr+ A E!htp2inec+\",\"A A+ B\",\"A d+ B\",\"B\",\"B E!hu0sbrr7+\",\"A\",\"A E!ht62uakw\",\"A E!htlus4sf\",\"A E!htlus4sf E!ht62uakw\",\"E!htvwq2yz+\",\"B\",\"B E!httrpl8n\"]],[\"A\",[\"a b\"]],[\"B\",[\"b\"]],[\"B\",[\"A\",\"( A + A )\"]],[\"A\",[\"B * B\"]],[\"A\",[\"c\"]],[\"E!ht1ife46\",[\"b g\"]],[\"E!htbz8sdr\",[\"A g\"]],[\"E!htp2inec\",[\"B x\"]],[\"E!hu0sbrr7\",[\", opt\"]],[\"E!htlus4sf\",[\"b g\"]],[\"E!ht62uakw\",[\"b g\"]],[\"E!htvwq2yz\",[\"A\",\"B\",\"d\",\"d C+\"]],[\"E!httrpl8n\",[\"A\",\"c\"]]]", 'BNF');
+  stringEqual(bnf.bnf_grammar_pairs, "[[\"S\",[\"E\"]],[\"E\",[\"A\",\"A E!htp2inec+\",\"E!htbz8sdr+ A\",\"E!htbz8sdr+ A E!htp2inec+\",\"E!ht1ife46 A\",\"E!ht1ife46 A E!htp2inec+\",\"E!ht1ife46 E!htbz8sdr+ A\",\"E!ht1ife46 E!htbz8sdr+ A E!htp2inec+\",\"A A+ B\",\"A d+ B\",\"B\",\"B E!hu0sbrr7+\",\"A\",\"A E!ht62uakw\",\"A E!htlus4sf\",\"A E!htlus4sf E!ht62uakw\",\"E!htvwq2yz+\",\"B\",\"B E!httrpl8n\"]],[\"A\",[\"a b\"]],[\"B\",[\"b\"]],[\"B\",[\"A\",\"( A + A )\"]],[\"A\",[\"B * B\"]],[\"A\",[\"c\"]],[\"E!ht1ife46\",[\"b g\"]],[\"E!htbz8sdr\",[\"A g\"]],[\"E!htp2inec\",[\"B x\"]],[\"E!hu0sbrr7\",[\", opt\"]],[\"E!htlus4sf\",[\"b g\"]],[\"E!ht62uakw\",[\"b g\"]],[\"E!htvwq2yz\",[\"A\",\"B\",\"d\",\"d C+\"]],[\"E!httrpl8n\",[\"A\",\"c\"]]]", 'BNF');
 
 
   /* Lexer */

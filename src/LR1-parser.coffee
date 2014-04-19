@@ -2,71 +2,71 @@ if typeof self == 'undefined'
     ulti = require './ulti.js'
     IR = require './IR.js'
     BNFParser = require './BNF-parser.js'
-    BNFGrammer = BNFParser.BNFGrammer
+    BNFGrammar = BNFParser.BNFGrammar
 else
     ulti = self.ulti
     IR = self.IR
-    BNFGrammer = self.BNFGrammer
+    BNFGrammar = self.BNFGrammar
 
 
-SyntaxTable = (grammer_content, start_stmt, end_lex) ->
+SyntaxTable = (grammar_content, start_stmt, end_lex) ->
     @start_stmt = start_stmt;
     @end_lex = end_lex;
 
-    @raw_bnf_grammer = new BNFGrammer(grammer_content)
-    @raw_bnf_grammer.makePlainBNF()
+    @raw_bnf_grammar = new BNFGrammar(grammar_content)
+    @raw_bnf_grammar.makePlainBNF()
 
-    @grammer_dict = new GrammerDict(@raw_bnf_grammer.bnf_grammer_pairs)
+    @grammar_dict = new GrammarDict(@raw_bnf_grammar.bnf_grammar_pairs)
 
-    @live_grammers = null
+    @live_grammars = null
 
     @
 
 SyntaxTable::init = ->
-    @live_grammers = {}
+    @live_grammars = {}
     for closure in @start_stmt
-        @initGrammer2Live closure, @end_lex, 0
+        @initGrammar2Live closure, @end_lex, 0
 
     @expand 0, null
 
-SyntaxTable::initGrammer2Live = (closure, end_lex, expand_level) ->
+SyntaxTable::initGrammar2Live = (closure, end_lex, expand_level) ->
     firsts_closure = []
-    for reprs in (@grammer_dict.get closure)['reprs']
-        if @grammer_dict.get reprs[0]
+    for reprs in (@grammar_dict.get closure)['reprs']
+        if @grammar_dict.get reprs[0]
             firsts_closure.push reprs[0]
 
-        SyntaxTable.addGrammer2Set closure, reprs, end_lex, @live_grammers, expand_level
+        SyntaxTable.addGrammar2Set closure, reprs, end_lex, @live_grammars, expand_level
 
     firsts_closure
 
-SyntaxTable.addGrammer2Set = (closure, repr, end_lex, grammer_set, expand_level=0) ->
+SyntaxTable.addGrammar2Set = (closure, repr, end_lex, grammar_set, expand_level=0) ->
     repr = repr.slice()
     end_lex = end_lex.slice()
 
     first_lex = repr.shift()
     isOneOrMore = false
 
-    if BNFGrammer.isOneOrMore first_lex
-        first_lex = BNFGrammer.removeSpecialMark first_lex
+    if BNFGrammar.isOneOrMore first_lex
+        first_lex = BNFGrammar.removeSpecialMark first_lex
         isOneOrMore = true
 
-    if first_lex not of grammer_set
-        grammer_set[first_lex] = []
+    if first_lex not of grammar_set
+        grammar_set[first_lex] = []
 
     if isOneOrMore
-        grammer_set[first_lex].repeat = true
+        grammar_set[first_lex].repeat = true
 
     for each_end_lex, i in end_lex
-        if BNFGrammer.isOneOrMore each_end_lex
-            end_lex[i] = BNFGrammer.removeSpecialMark each_end_lex
+        if BNFGrammar.isOneOrMore each_end_lex
+            end_lex[i] = BNFGrammar.removeSpecialMark each_end_lex
 
-    grammer_set[first_lex].push
+    grammar_set[first_lex].push
         closure: closure
         repr: repr
         end_lex: end_lex
         expand_level: expand_level
 
-SyntaxTable.mixGrammers = (a, b) ->
+SyntaxTable.mixGrammars = (a, b) ->
     ret = {}
     for i of a
         if i not of ret
@@ -85,7 +85,7 @@ SyntaxTable.mixGrammers = (a, b) ->
     log ret, 'mixed'
     ret
 
-SyntaxTable.cloneGrammer = (a) ->
+SyntaxTable.cloneGrammar = (a) ->
     ret = {}
     for closure of a
         ret[closure] = []
@@ -104,43 +104,43 @@ SyntaxTable.cloneGrammer = (a) ->
     ret
 
 SyntaxTable::moveDot = (dot_lex, next_lex, expand_level) ->
-    dot_grammers = @live_grammers[dot_lex]
+    dot_grammars = @live_grammars[dot_lex]
     log dot_lex, 'dot-lex -' + dot_lex
-    if not dot_grammers
-        @live_grammers = {}
+    if not dot_grammars
+        @live_grammars = {}
         return false
 
-    new_live_grammers = {}
+    new_live_grammars = {}
     ristrict = null
 
-    if dot_grammers.repeat
+    if dot_grammars.repeat
         log 'repeat!'
-        new_live_grammers = SyntaxTable.cloneGrammer @live_grammers
+        new_live_grammars = SyntaxTable.cloneGrammar @live_grammars
         ristrict = [dot_lex]
 
-    dot_grammers.sort (a, b) -> b['expand_level'] - a['expand_level']
+    dot_grammars.sort (a, b) -> b['expand_level'] - a['expand_level']
 
-    for each_grammer in dot_grammers
-        if not each_grammer['repr'].length
-            if next_lex in each_grammer['end_lex']
+    for each_grammar in dot_grammars
+        if not each_grammar['repr'].length
+            if next_lex in each_grammar['end_lex']
                 return {
-                    expand_level: each_grammer['expand_level'],
-                    closure: each_grammer['closure']
+                    expand_level: each_grammar['expand_level'],
+                    closure: each_grammar['closure']
                 }
         else
-            ristrict and ristrict.push BNFGrammer.removeSpecialMark each_grammer['repr'][0]
-            SyntaxTable.addGrammer2Set each_grammer['closure'],
-                    each_grammer['repr'],
-                    each_grammer['end_lex'],
-                    new_live_grammers,
-                    each_grammer['expand_level']
+            ristrict and ristrict.push BNFGrammar.removeSpecialMark each_grammar['repr'][0]
+            SyntaxTable.addGrammar2Set each_grammar['closure'],
+                    each_grammar['repr'],
+                    each_grammar['end_lex'],
+                    new_live_grammars,
+                    each_grammar['expand_level']
 
-    @live_grammers = new_live_grammers
+    @live_grammars = new_live_grammars
 
-    if dot_grammers.repeat
-        for grammer of @live_grammers
-            if grammer not in ristrict
-                delete @live_grammers[grammer]
+    if dot_grammars.repeat
+        for grammar of @live_grammars
+            if grammar not in ristrict
+                delete @live_grammars[grammar]
 
     @expand expand_level, ristrict
 
@@ -153,25 +153,25 @@ SyntaxTable::expand = (expand_level, ristrict) ->
         log ristrict, 'ristrict'
 
     while 1
-        for closure of @live_grammers
+        for closure of @live_grammars
             if ristrict and closure not in ristrict
                 continue
 
-            if @grammer_dict.get closure
+            if @grammar_dict.get closure
                 end_lex = []
-                for x in @live_grammers[closure]
+                for x in @live_grammars[closure]
                     if x['repr'].length
                         first_lex = x['repr'][0]
-                        first_lex = if BNFGrammer.isOneOrMore first_lex then BNFGrammer.removeSpecialMark first_lex else first_lex
-                        ulti.uniqueConcat end_lex, @grammer_dict.findFirst first_lex
+                        first_lex = if BNFGrammar.isOneOrMore first_lex then BNFGrammar.removeSpecialMark first_lex else first_lex
+                        ulti.uniqueConcat end_lex, @grammar_dict.findFirst first_lex
 
                     else
                         ulti.uniqueConcat end_lex, @end_lex
                         ulti.uniqueConcat end_lex, x['end_lex']
 
 
-                    if @live_grammers[closure].repeat
-                        ulti.uniqueConcat end_lex, @grammer_dict.findFirst closure
+                    if @live_grammars[closure].repeat
+                        ulti.uniqueConcat end_lex, @grammar_dict.findFirst closure
 
                     closure_id = closure + end_lex.join ''
                     if closure_id in expanded_closures
@@ -182,7 +182,7 @@ SyntaxTable::expand = (expand_level, ristrict) ->
 
                 expanded_closures.push closure_id
 
-                firsts_closure = @initGrammer2Live closure, end_lex, expand_level
+                firsts_closure = @initGrammar2Live closure, end_lex, expand_level
                 if ristrict
                     log firsts_closure, 'firsts_closure'
                     ulti.uniqueConcat ristrict, firsts_closure
@@ -194,16 +194,16 @@ SyntaxTable::expand = (expand_level, ristrict) ->
 
     null
 
-GrammerDict = (bnf_grammer_pairs) ->
-    @bnf_grammer_pairs = bnf_grammer_pairs
+GrammarDict = (bnf_grammar_pairs) ->
+    @bnf_grammar_pairs = bnf_grammar_pairs
     @dict_map = {}
 
-    for line in bnf_grammer_pairs
+    for line in bnf_grammar_pairs
         closure = line[0]
         reprs = if line[1] instanceof Array then line[1] else [line[1]]
 
         if closure not of @dict_map
-            @dict_map[closure] = GrammerDict.initClosure()
+            @dict_map[closure] = GrammarDict.initClosure()
 
         for repr in reprs
             @dict_map[closure]['reprs'].push repr.split /\s+/
@@ -212,18 +212,18 @@ GrammerDict = (bnf_grammer_pairs) ->
 
     @
 
-GrammerDict.initClosure = ->
+GrammarDict.initClosure = ->
     reprs: []
     first: []
     follows: []
 
-GrammerDict::get = (closure) ->
-    if BNFGrammer.isOneOrMore closure
-        closure = BNFGrammer.removeSpecialMark closure
+GrammarDict::get = (closure) ->
+    if BNFGrammar.isOneOrMore closure
+        closure = BNFGrammar.removeSpecialMark closure
 
     @dict_map[closure]
 
-GrammerDict::makeFirstSets = ->
+GrammarDict::makeFirstSets = ->
     getFirst = (closure_key, first_set, pushed_closures) ->
         closure = @dict_map[closure_key]
         pushed_closures.push closure_key
@@ -243,7 +243,7 @@ GrammerDict::makeFirstSets = ->
         getFirst.call @, closure_key, first_set, []
 
 
-GrammerDict::findFirst = (closures) ->
+GrammarDict::findFirst = (closures) ->
     if closures not instanceof Array
         closures = [closures]
 
@@ -257,7 +257,7 @@ GrammerDict::findFirst = (closures) ->
     ret
 
 
-GrammerNode = (lex, parent=null, leaves=[]) ->
+GrammarNode = (lex, parent=null, leaves=[]) ->
     @parent = null
     @leaves = leaves
     @lex = lex
@@ -268,34 +268,34 @@ GrammerNode = (lex, parent=null, leaves=[]) ->
 
     @
 
-GrammerNode::isName = (lex) ->
+GrammarNode::isName = (lex) ->
     lex == @lex
 
-GrammerNode::getValue = ->
+GrammarNode::getValue = ->
     @value
 
-GrammerNode::setValue = (val) ->
+GrammarNode::setValue = (val) ->
     @value = val
 
-GrammerNode::appendLeaf = (leaf) ->
+GrammarNode::appendLeaf = (leaf) ->
     if not @hasLeaf leaf
         @leaves.push leaf
 
-GrammerNode::prependLeaf = (leaf) ->
+GrammarNode::prependLeaf = (leaf) ->
     if not @hasLeaf leaf
         @leaves.unshift leaf
 
-GrammerNode::hasLeaf = (leaf) ->
+GrammarNode::hasLeaf = (leaf) ->
     leaf in @leaves
 
-GrammerNode::findLeaf = (lex_name) ->
+GrammarNode::findLeaf = (lex_name) ->
     for leaf in @leaves
         if leaf.lex == lex_name
             return leaf
 
     return null
 
-GrammerNode::linkParent = (parent, use_prepend=null) ->
+GrammarNode::linkParent = (parent, use_prepend=null) ->
     @parent = parent
 
     if use_prepend
@@ -344,17 +344,17 @@ SyntaxParser = (input_lex) ->
 
     @sync_lex = []
 
-    @reduce_cache = {}
-    @reduce_cache_len = {}
+    @_reduce_cache = {}
+    @_reduce_cache_len = {}
 
-    @tree = new GrammerNode 'Syntax'
+    @tree = new GrammarNode 'Syntax'
 
     @
 
 SyntaxParser.flow = (args) ->
     console.log 'SyntaxParser'
 
-    grammer = args.grammer
+    grammar = args.grammar
     start_stmt = args.start_stmt
     end_lex = args.end_lex
     sync_lex = args.sync_lex or []
@@ -365,7 +365,7 @@ SyntaxParser.flow = (args) ->
     SyntaxParser.Mix.mixer = ->
         mix_map.arrange.apply mix_map, arguments
 
-    syntax_table = new SyntaxTable grammer, start_stmt, end_lex
+    syntax_table = new SyntaxTable grammar, start_stmt, end_lex
     syntax_parser = new SyntaxParser lex_list
     syntax_parser.sync_lex = sync_lex
     
@@ -392,9 +392,9 @@ SyntaxParser.checkIfReduce = (syntax_table, stack, lookahead) ->
 
     cached_index = spcr.getCachedIndex stack
     if cached_index > -1
-        syntax_table.live_grammers = spcr.checkedLiveGrammers[cached_index]
+        syntax_table.live_grammars = spcr.checkedLiveGrammars[cached_index]
 
-    if not syntax_table.live_grammers
+    if not syntax_table.live_grammars
         syntax_table.init()
 
 
@@ -403,12 +403,12 @@ SyntaxParser.checkIfReduce = (syntax_table, stack, lookahead) ->
 
     ret = []
     for index in [cached_index + 1..len - 1]
-        log syntax_table.live_grammers, 'before live grammer'
+        log syntax_table.live_grammars, 'before live grammar'
 
         result = syntax_table.moveDot stack[index], stack[index + 1], (index + 1)
 
         log result, 'after move dot'
-        log syntax_table.live_grammers, 'live grammer'
+        log syntax_table.live_grammars, 'live grammar'
         log index + 1, 'move dot index'
         if result
             ret = stack.slice 0, result['expand_level']
@@ -422,24 +422,24 @@ SyntaxParser.checkIfReduce = (syntax_table, stack, lookahead) ->
     else
         spcr.lastCheckedStack = stack.slice()
 
-    spcr.checkedLiveGrammers = spcr.checkedLiveGrammers.slice(0, spcr.lastCheckedStack.length)
-    while spcr.checkedLiveGrammers.length < spcr.lastCheckedStack.length
-        spcr.checkedLiveGrammers.push ''
+    spcr.checkedLiveGrammars = spcr.checkedLiveGrammars.slice(0, spcr.lastCheckedStack.length)
+    while spcr.checkedLiveGrammars.length < spcr.lastCheckedStack.length
+        spcr.checkedLiveGrammars.push ''
 
     if not ret.length
-        spcr.checkedLiveGrammers[spcr.checkedLiveGrammers.length - 1] = syntax_table.live_grammers
+        spcr.checkedLiveGrammars[spcr.checkedLiveGrammars.length - 1] = syntax_table.live_grammars
 
 #    console.log stack
 #    console.log ret
 #    console.log spcr.lastCheckedStack
-#    console.log spcr.checkedLiveGrammers
+#    console.log spcr.checkedLiveGrammars
 #    console.log ''
 
     if ret.length then ret else stack
 
 
 SyntaxParser.checkIfReduce.lastCheckedStack = []
-SyntaxParser.checkIfReduce.checkedLiveGrammers = []
+SyntaxParser.checkIfReduce.checkedLiveGrammars = []
 SyntaxParser.checkIfReduce.getCachedIndex = (stack) ->
     scif = SyntaxParser.checkIfReduce
 
@@ -482,7 +482,7 @@ SyntaxParser::reduce = (syntax_table, value_assign=true) ->
     log @stack, 'before reduce'
     @generateTree(value_assign)
 
-    syntax_table.live_grammers = null
+    syntax_table.live_grammars = null
     result = SyntaxParser.checkIfReduce syntax_table, @stack, @input_lex[0]
 
     sync_index = @sync_lex.indexOf result[result.length - 1]
@@ -507,14 +507,14 @@ SyntaxParser::generateTree = (value_assign) ->
     curr_node_leaves_len = @tree.leaves.length
 
     if curr_len > curr_node_leaves_len
-        new_gt = new GrammerNode curr_stack[curr_len - 1], @tree
+        new_gt = new GrammarNode curr_stack[curr_len - 1], @tree
 
     else
         for i in [0..curr_len - 1]
             if not @tree.leaves[i].isName curr_stack[i]
                 break
 
-        new_gt = new GrammerNode curr_stack[curr_len - 1]
+        new_gt = new GrammarNode curr_stack[curr_len - 1]
 
         while i++ != curr_node_leaves_len
             @tree.leaves.pop().linkParent new_gt, true

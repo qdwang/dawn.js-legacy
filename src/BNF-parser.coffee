@@ -4,20 +4,20 @@ else
     ulti = self.ulti
 
 
-BNFGrammer = (bnf_raw_content) ->
-    @raw_bnf_grammer = bnf_raw_content
+BNFGrammar = (bnf_raw_content) ->
+    @raw_bnf_grammar = bnf_raw_content
 
-    grammer_lines = bnf_raw_content.split '\n'
-    grammer_lines_arr = @grammerPrepare grammer_lines
-#    grammer_lines_arr = (((if x and x.match /\|/ then (y.trim() for y in x.split '|') else x.trim()) for x in line.split '->') for line in grammer_lines)
+    grammar_lines = bnf_raw_content.split '\n'
+    grammar_lines_arr = @grammarPrepare grammar_lines
+#    grammar_lines_arr = (((if x and x.match /\|/ then (y.trim() for y in x.split '|') else x.trim()) for x in line.split '->') for line in grammar_lines)
 
-    @grammerPrepare grammer_lines
-    @dist = grammer_lines_arr[0][0]
-    @bnf_grammer_pairs = grammer_lines_arr
+    @grammarPrepare grammar_lines
+    @dist = grammar_lines_arr[0][0]
+    @bnf_grammar_pairs = grammar_lines_arr
 
     @
 
-BNFGrammer::grammerPrepare = (grammer_lines) ->
+BNFGrammar::grammarPrepare = (grammar_lines) ->
     ret = []
 
     repr_walker = (repr) ->
@@ -38,7 +38,7 @@ BNFGrammer::grammerPrepare = (grammer_lines) ->
         (repr.trim() for repr in repr_arr)
 
 
-    for line in grammer_lines
+    for line in grammar_lines
         production = []
         line_arr = line.split '->'
         production.push line_arr[0].trim()
@@ -50,18 +50,18 @@ BNFGrammer::grammerPrepare = (grammer_lines) ->
 
 
 
-BNFGrammer.isOneOrMore = (closure) ->
+BNFGrammar.isOneOrMore = (closure) ->
     closure.length > 1 and '+' == closure.slice -1
 
 
-BNFGrammer.removeSpecialMark = (closure) ->
+BNFGrammar.removeSpecialMark = (closure) ->
     closure.replace /[\[\]\(\)\*\+]+/g, ''
 
-BNFGrammer.hasSpecialMark = (closure) ->
+BNFGrammar.hasSpecialMark = (closure) ->
     closure.match /[\[\]\(\)\*\+]+/
 
 
-BNFGrammer::makePlainBNF = (stop) ->
+BNFGrammar::makePlainBNF = (stop) ->
     rules =
         group: /[\(\[][^\s].+?[^\s][\)\]]/g
 
@@ -96,7 +96,7 @@ BNFGrammer::makePlainBNF = (stop) ->
         ret
 
     additional_reprs = []
-    for pairs in @bnf_grammer_pairs
+    for pairs in @bnf_grammar_pairs
         if pairs[1] not instanceof Array
             pairs[1] = [pairs[1]]
 
@@ -113,16 +113,16 @@ BNFGrammer::makePlainBNF = (stop) ->
 
 
     for repr in additional_reprs
-        @bnf_grammer_pairs.push repr
+        @bnf_grammar_pairs.push repr
 
     if not stop
         @makePlainBNF(1)
 
 
 if typeof self == 'undefined'
-    module.exports.BNFGrammer = BNFGrammer
+    module.exports.BNFGrammar = BNFGrammar
 else
-    self.BNFGrammer = BNFGrammer
+    self.BNFGrammar = BNFGrammar
 
 log = ->
 #return
