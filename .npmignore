@@ -1,0 +1,6 @@
+.git*
+doc/
+.DS_Store
+.iml
+.idea/
+

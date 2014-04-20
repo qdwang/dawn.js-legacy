@@ -2,10 +2,12 @@
 
 **bring intelligence to coding**
 
-
-
-
 dawn.js is a powerful toolkit to help with coding
+
+## NPM
+```
+npm install dawn.js
+```
 
 ## Built in Features
 
