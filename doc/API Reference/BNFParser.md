@@ -2,9 +2,9 @@
 
 BNF Parser will generate structure from plain E-BNF definition
 
-## Definition
+### Definition
 
-### BNFGrammar
+#### new BNFGrammar
 get instance of BNFGrammar
 ```
 bnf_grammar = new BNFGrammar(
@@ -18,7 +18,7 @@ raw_bnf_grammar -> input bnf grammar
 bnf grammar pairs -> parsed bnf grammar pairs
 ```
 
-### bnf_grammar.grammarPrepare
+#### bnf_grammar.grammarPrepare
 generate grammar structure from plain grammar lines
 ```
 bnf_grammar.grammarPrepare(
@@ -26,7 +26,7 @@ bnf_grammar.grammarPrepare(
 )
 ```
 
-### BNFGrammar.isOneOrMore (static method)
+#### BNFGrammar.isOneOrMore (static method)
 test if the closure end with a '+' mark
 ```
 BNFGrammar.isOneOrMore(
@@ -34,7 +34,7 @@ BNFGrammar.isOneOrMore(
 )
 ```
 
-### BNFGrammar.removeSpecialMark (static method)
+#### BNFGrammar.removeSpecialMark (static method)
 remove the special mark in closure
 ```
 BNFGrammar.removeSpecialMark(
@@ -42,7 +42,7 @@ BNFGrammar.removeSpecialMark(
 )
 ```
 
-### BNFGrammar.hasSpecialMark (static method)
+#### BNFGrammar.hasSpecialMark (static method)
 test if the special mark in closure
 ```
 BNFGrammar.hasSpecialMark(
@@ -50,7 +50,7 @@ BNFGrammar.hasSpecialMark(
 )
 ```
 
-### bnf_grammar.makePlainBNF
+#### bnf_grammar.makePlainBNF
 convert E-BNF to normal BNF
 ```
 bnf_grammar.makePlainBNF(

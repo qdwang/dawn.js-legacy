@@ -2,9 +2,9 @@
 
 Zipper is a set of utilities to deal with tree structure
 
-## Definition
+### Definition
 
-### Zipper
+#### new Zipper
 get instance of Zipper
 ```
 zipper = new Zipper(
@@ -17,13 +17,13 @@ zipper = new Zipper(
 tree -> input tree
 curr_node -> current node
 ```
-### zipper.up
+#### zipper.up
 turn current node to be its parent node
 ```
 zipper.up()
 ```
 
-### zipper.down
+#### zipper.down
 turn current node to be its child node in recursively
 ```
 zipper.down(
@@ -31,21 +31,21 @@ zipper.down(
 )
 ```
 
-### zipper.parent
+#### zipper.parent
 turn current node to be its specific parent node in recursively
 ```
 zipper.parent(
     the feature of parent node wanted -> object
 )
 ```
-### zipper.node
+#### zipper.node
 get current node
 ```
 zipper.node()
 ```
 
 
-### Zipper.select (static method)
+#### Zipper.select (static method)
 get nodes from css selector style syntax
 the default css selector syntax is Zipper.selectorAST
 ```
@@ -55,7 +55,7 @@ Zipper.select(
 )
 ```
 
-### Zipper.selectorAST (static method)
+#### Zipper.selectorAST (static method)
 define the css selector syntax for AST
 ```
 return {
@@ -81,7 +81,7 @@ return {
 }
 ```
 
-### Zipper.findParent (static method)
+#### Zipper.findParent (static method)
 find the specific parent node in recursively
 ```
 Zipper.findParent(

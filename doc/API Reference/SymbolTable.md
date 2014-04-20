@@ -2,7 +2,7 @@
 
 SymbolTable is a grid system to store specific data for syntax tree
 
-## How it works
+### How it works
 ```
 marker -> {'A': function(){}, 'B': function(){}}
 
@@ -47,9 +47,9 @@ scope = ['Scope']
 symbol_tables = SymbolTable.walkGenerate(ast, marker, scope)
 ```
 
-## Definition
+### Definition
 
-### SymbolTable
+#### new SymbolTable
 get instance of SymbolTable
 ```
 symbol_table = new SymbolTable(
@@ -64,7 +64,7 @@ stack -> place to store parsed data
 parent -> parent symbol table
 ```
 
-### SymbolTable.flow (static method)
+#### SymbolTable.flow (static method)
 The flow of SymbolTable
 
 flow args must contain:
@@ -83,7 +83,7 @@ args_will_be_combined = {
 }
 ```
 
-### SymbolTable.walkGenerate (static method)
+#### SymbolTable.walkGenerate (static method)
 generate symbol table from syntax tree
 ```
 SymbolTable.walkGenerate(
@@ -93,7 +93,7 @@ SymbolTable.walkGenerate(
 )
 ```
 
-### symbol_table.convert
+#### symbol_table.convert
 convert obj via definition of symbol_table.markers
 ```
 symbol_table.convert(
@@ -101,7 +101,7 @@ symbol_table.convert(
 )
 ```
 
-### SymbolTable.match (static method)
+#### SymbolTable.match (static method)
 if objectA contains keys and values of objectB
 ```
 SymbolTable.match(
@@ -110,7 +110,7 @@ SymbolTable.match(
 )
 ```
 
-### symbol_table.push
+#### symbol_table.push
 push row to symbol_table.stack
 ```
 symbol_table.push(
@@ -118,7 +118,7 @@ symbol_table.push(
 )
 ```
 
-### symbol_table.concat
+#### symbol_table.concat
 concatenate rows to symbol_table.stack
 ```
 symbol_table.concat(
@@ -128,7 +128,7 @@ symbol_table.concat(
 )
 ```
 
-### symbol_table.lookUpTop
+#### symbol_table.lookUpTop
 look up for the specific record from stack top
 if nothing is found it will search the search the parent symbol table
 ```
@@ -137,7 +137,7 @@ symbol_table.lookUpTop(
 )
 ```
 
-### symbol_table.filter
+#### symbol_table.filter
 get specific records
 ```
 symbol_table.filter(
@@ -148,7 +148,7 @@ symbol_table.filter(
         2 -> matches in all scopes
 )
 ```
-### SyntaxTable.Mix
+#### SyntaxTable.Mix
 this mix function will be invoked during SyntaxTable.walkGenerate
 if `SyntaxTable.Mix.mixer` is defined as a function, it will work
 

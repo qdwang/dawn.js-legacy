@@ -2,7 +2,7 @@
 
 MixMap is a reference grid system
 
-## How it works
+### How it works
 
 ```
 If one MixMap has been arranged
@@ -47,9 +47,9 @@ mixmap.get(ObjectB.Node2, 'TypeA') // We get ObjectA.Node1
 ```
 
 
-## Definition
+### Definition
 
-### MixMap
+#### new MixMap
 get instance of MixMap
 ```
 mixmap = new MixMap()
@@ -60,7 +60,7 @@ i -> unique id number
 ref_map -> place to store reference relations
 ```
 
-### mixmap.arrange
+#### mixmap.arrange
 add reference relation to mixmap
 ```
 mixmap.arrange(
@@ -70,7 +70,7 @@ mixmap.arrange(
 )
 ```
 
-### mixmap.get
+#### mixmap.get
 get object through it's type and related object
 ```
 mixmap.get(

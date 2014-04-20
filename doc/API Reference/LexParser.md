@@ -2,7 +2,7 @@
 
 LexParser is a parser to tokenize the code script
 
-## How it works
+### How it works
 
 ```
 'var foo = function(){};'
@@ -44,9 +44,9 @@ lex_parser.lex_list // we get the lex result list
 lex_parser.cursor_lex // we get the current point lex
 ```
 
-## Definition
+### Definition
 
-### LexParser
+#### new LexParser
 get instance of LexParser
 ```
 lex_parser = new LexParser(
@@ -64,7 +64,7 @@ lex_list -> parsed lex result
 cursor_lex -> current point lex
 ```
 
-### LexParser.flow (static method)
+#### LexParser.flow  (static method)
 The flow of LexParser
 
 flow args must contain:
@@ -85,7 +85,7 @@ args_will_be_combined = {
 }
 ```
 
-### lex_parser.tokenize
+#### lex_parser.tokenize
 tokenize the script
 ```
 lex_parser.tokenize(
