@@ -148,14 +148,15 @@ symbol_table.filter(
         2 -> matches in all scopes
 )
 ```
-#### SyntaxTable.Mix
+#### SymbolTable.Mix
 this mix function will be invoked during SyntaxTable.walkGenerate
-if `SyntaxTable.Mix.mixer` is defined as a function, it will work
+if `SymbolTable.Mix.mixer` is defined as a function, it will work
 
 ```
-SyntaxTable.Mix.mixer = function(){
+SymbolTable.Mix.mixer = function(){
     handler(
         ['SyntaxNode', syntax_scope_node],
         ['SymbolTable', symbol_table]
     )
 }
+```
