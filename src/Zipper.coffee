@@ -7,7 +7,6 @@ else
 Zipper = (tree) ->
     @tree = tree
     @curr_node = @tree
-    @route = []
     @
 
 Zipper::up = ->

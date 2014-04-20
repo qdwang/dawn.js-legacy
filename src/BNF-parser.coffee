@@ -11,8 +11,7 @@ BNFGrammar = (bnf_raw_content) ->
     grammar_lines_arr = @grammarPrepare grammar_lines
 #    grammar_lines_arr = (((if x and x.match /\|/ then (y.trim() for y in x.split '|') else x.trim()) for x in line.split '->') for line in grammar_lines)
 
-    @grammarPrepare grammar_lines
-    @dist = grammar_lines_arr[0][0]
+#    @dist = grammar_lines_arr[0][0]
     @bnf_grammar_pairs = grammar_lines_arr
 
     @

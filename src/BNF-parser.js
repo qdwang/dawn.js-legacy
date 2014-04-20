@@ -13,8 +13,6 @@
     this.raw_bnf_grammar = bnf_raw_content;
     grammar_lines = bnf_raw_content.split('\n');
     grammar_lines_arr = this.grammarPrepare(grammar_lines);
-    this.grammarPrepare(grammar_lines);
-    this.dist = grammar_lines_arr[0][0];
     this.bnf_grammar_pairs = grammar_lines_arr;
     return this;
   };

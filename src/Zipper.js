@@ -11,7 +11,6 @@
   Zipper = function(tree) {
     this.tree = tree;
     this.curr_node = this.tree;
-    this.route = [];
     return this;
   };
 

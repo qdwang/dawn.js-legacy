@@ -54,13 +54,13 @@ lex_list = [
     ]
 
 // if coffee is used, this definition will be prettier
-grammar = '
+grammar = ' \
     Stmt -> ABC D \n\
     ABC -> A BC \n\
     BC -> B C \n\
     '
 
-syntax_table = new SyntaxTable(grammer, ['Stmt'], ['End'])
+syntax_table = new SyntaxTable(grammar, ['Stmt'], ['End'])
 syntax_parser = new SyntaxParser(lex_list)
 syntax_parser.parseTable(syntax_table)
 syntax_parser.tree // we will get the syntax tree
@@ -85,9 +85,91 @@ input_vale -> input value without lex
 
 stack -> remained lex to be parsed
 
-sync_lex -> define the recover way of parsing fail
+sync_lex -> define how to recover if parsing fail
 
 tree -> parsed syntax tree result
 ```
 
-// TO BE CONTINUED...
+### SyntaxParser.flow (static method)
+The flow of SyntaxParser
+
+flow args must contain:
+```
+input_args = {
+    grammar: grammar definition,
+    start_stmt: from which statement to start parsing,
+    end_lex: detect which lex to end parsing,
+    sync_lex: define how to recover if parsing fail,
+    lex_list: lex result from LexParser,
+    mix_map: mix map object,
+    ast_cutter: types of nodes need to be cut
+}
+```
+this flow will output:
+```
+args_will_be_combined = {
+    ast: parsed result AST
+}
+```
+
+
+### syntax_parser.getAST
+get AST from syntax_parser.tree
+```
+syntax_parser.getAST(
+    cut patterns -> array
+)
+```
+
+### syntax_parser.shift
+LR1 shift
+```
+syntax_parser.shift()
+```
+
+### SyntaxParser.checkIfReduce (static method)
+LR1 reduce detect handler
+```
+SyntaxParser.checkIfReduce(
+    syntax table, -> SyntaxTable
+    stack need to be detect, -> array
+    look ahead, -> string
+)
+```
+
+### syntax_parser.reduce
+make reduce
+```
+syntax_parser.reduce(
+    syntax table, -> SyntaxTable
+    if should assign value to reduction -> bool
+)
+```
+
+### syntax_parser.generateTree
+generate syntax tree from reduction
+```
+syntax_parser.generateTree(
+    if should assign value to reduction -> bool
+)
+```
+### syntax_parser.parseTable
+walk the whole shifting and reducing procedure
+```
+syntax_parser.parseTable(
+    syntax table -> SyntaxTable
+)
+```
+
+### SyntaxParser.Mix
+this mix function will be invoked during syntax_parser.generateTree
+if `SyntaxParser.Mix.mixer` is defined as a function, it will work
+```
+SyntaxParser.Mix.mixer = function(){
+    handler(
+        ['SyntaxNode', syntax_node],
+        ['Lex', lex]
+    )
+}
+```
+

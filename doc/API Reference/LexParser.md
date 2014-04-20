@@ -64,24 +64,24 @@ lex_list -> parsed lex result
 cursor_lex -> current point lex
 ```
 
-### LexParser.flow
+### LexParser.flow (static method)
 The flow of LexParser
 
 flow args must contain:
 ```
 input_args = {
-    script: script,
-    lex_syntax: lex_syntax,
-    cursor_pos: cursor_pos
+    script: origin script content,
+    lex_syntax: definition of lex syntax,
+    cursor_pos: current cursor position
 }
 ```
 
-This flow will output:
+this flow will output:
 ```
 args_will_be_combined = {
-    lex_list: lex_list,
-    cursor_lex: cursor_lex,
-    end_lex: end_lex // The lex define the End of Program
+    lex_list: lex result after parsing,
+    cursor_lex: current cursor lex,
+    end_lex: the lex define the End of Program
 }
 ```
 
