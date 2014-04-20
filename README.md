@@ -38,7 +38,7 @@ dawn.js is a powerful toolkit to help with coding
 
 * [LexParser](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/LexParser.md) - a parser to tokenize the code script
 
-* [BNF Parser](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/BNFParser.md) - generate structure from plain E-BNF definition
+* [BNFParser](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/BNFParser.md) - generate structure from plain E-BNF definition
 * [SyntaxParser](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/SyntaxParser.md) - a parser to generate syntax tree from lex list
 
 * [SymbolTable](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/SymbolTable.md) - a grid system to store specific data for syntax tree
