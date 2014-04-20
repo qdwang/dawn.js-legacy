@@ -15,7 +15,6 @@ Syntax Parser is a parser to generate syntax tree from lex list
 
     ----> LR1 Parser with grammar syntax definition ---->
 
-```
 {
     lex: 'Stmt',
     leaves: [
@@ -74,7 +73,7 @@ get instance of SyntaxParser
 ```
 syntax_parser = new SyntaxParser(
     input lex -> array
-    )
+)
 ```
 
 **Instance Attributes**

@@ -54,7 +54,7 @@ get instance of SymbolTable
 ```
 symbol_table = new SymbolTable(
     grid column markers -> object
-    )
+)
 ```
 
 **Instance Attributes**

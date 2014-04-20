@@ -1,6 +1,6 @@
 ## MixMap
 
-MixMap is a powerful reference grid system
+MixMap is a reference grid system
 
 ## How it works
 
@@ -20,14 +20,11 @@ Then
                   with TypeA
     ObjectB.Node2 ----------> ObjectA.Node1
 
-
                   with TypeC
     ObjectB.Node2 ----------> ObjectC.Node3
 
-
                   with TypeA
     ObjectC.Node3 ----------> ObjectA.Node1
-
 
                   with TypeB
     ObjectC.Node3 ----------> ObjectB.Node2

@@ -28,7 +28,7 @@ get instance of Flow
 ```
 flow = new Flow(
     start arguments -> object
-    )
+)
 ```
 
 **Instance Attributes**
@@ -42,7 +42,7 @@ append plugin flow function
 ```
 flow.append(
     a flow function of plugin -> function
-    )
+)
 ```
 
 ### flow.next

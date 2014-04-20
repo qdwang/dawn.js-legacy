@@ -31,17 +31,17 @@ dawn.js is a powerful toolkit to help with coding
 * Coming soon...
 
 ## API Reference
-* [Flow](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/Flow.md)
-* [MixMap](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/MixMap.md)
+* [Flow](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/Flow.md) - a plugin system
+* [MixMap](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/MixMap.md) - a reference grid system
 
-* [LexParser](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/LexParser.md)
+* [LexParser](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/LexParser.md) - a parser to tokenize the code script
 
-* [BNFParser](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/BNFParser.md)
-* [SyntaxParser](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/SyntaxParser.md)
+* [BNF Parser](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/BNFParser.md) - generate structure from plain E-BNF definition
+* [SyntaxParser](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/SyntaxParser.md) - a parser to generate syntax tree from lex list
 
-* [SymbolTable](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/SymbolTable.md)
+* [SymbolTable](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/SymbolTable.md) - a grid system to store specific data for syntax tree
 
-* [Zipper](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/Zipper.md)
+* [Zipper](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/Zipper.md) - a set of utilities to deal with tree structure
 
 
 ## License

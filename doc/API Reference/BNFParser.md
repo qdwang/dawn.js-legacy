@@ -9,7 +9,7 @@ get instance of BNFGrammar
 ```
 bnf_grammar = new BNFGrammar(
     raw bnf content -> string
-    )
+)
 ```
 
 **Instance Attributes**

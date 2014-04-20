@@ -9,7 +9,7 @@ get instance of Zipper
 ```
 zipper = new Zipper(
     tree -> object
-    )
+)
 ```
 
 **Instance Attributes**
