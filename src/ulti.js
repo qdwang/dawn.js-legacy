@@ -72,9 +72,11 @@
       }
       return ret;
     },
-    log: function(x, mark, indent) {
-      var cache, customStringify, result, surfix;
-      surfix = ' - ' + (mark ? mark : '');
+    toObjString: function(obj, indent) {
+      var cache, customStringify;
+      if (indent == null) {
+        indent = 0;
+      }
       cache = [];
       customStringify = function(k, v) {
         if (typeof v === 'object' && v !== null) {
@@ -85,8 +87,65 @@
         }
         return v;
       };
-      result = (JSON.stringify(x, customStringify, indent != null ? indent : 4)) + surfix;
-      cache = null;
+      return JSON.stringify(obj, customStringify, indent);
+    },
+    dump: function(type, obj) {
+      var cache_dir, dawnjs_dir, fs, home, key;
+      if (ulti.indexedDBWrite) {
+        return ulti.indexedDBWrite(type, obj);
+      } else {
+        fs = require('fs');
+        key = obj.key;
+        obj = ulti.toObjString(obj);
+        home = process.env.USERPROFILE || process.env.HOME;
+        dawnjs_dir = home + '/.dawnjs/';
+        cache_dir = dawnjs_dir + 'cache/';
+        if (!fs.existsSync(dawnjs_dir)) {
+          fs.mkdirSync(dawnjs_dir);
+        }
+        if (!fs.existsSync(cache_dir)) {
+          fs.mkdirSync(cache_dir);
+        }
+        return fs.writeFile(cache_dir + key + '.' + type, obj);
+      }
+    },
+    load: function(type, file_key, callback) {
+      var cache_dir, dawnjs_dir, file_name, fs, home;
+      if (ulti.indexedDBRead) {
+        return ulti.indexedDBRead(type, file_key, function(res) {
+          try {
+            res = JSON.parse(res);
+          } catch (_error) {
+            null;
+          }
+          return callback(res);
+        });
+      } else {
+        fs = require('fs');
+        home = process.env.USERPROFILE || process.env.HOME;
+        dawnjs_dir = home + '/.dawnjs/';
+        cache_dir = dawnjs_dir + 'cache/';
+        file_name = cache_dir + file_key + '.' + type;
+        console.log(file_name);
+        if (fs.existsSync(file_name)) {
+          return fs.readFile(file_name, null, function(err, res) {
+            try {
+              res = JSON.parse(res);
+            } catch (_error) {
+              null;
+            }
+            return callback(res);
+          });
+        }
+      }
+    },
+    log: function(x, mark, indent) {
+      var result, surfix;
+      if (indent == null) {
+        indent = 4;
+      }
+      surfix = ' - ' + (mark ? mark : '');
+      result = ulti.toObjString(x, indent) + surfix;
       console.log(result);
       return result;
     },
@@ -124,6 +183,51 @@
       return ret = [];
     }
   };
+
+  (function() {
+    var workDB;
+    if (typeof self === 'undefined' || typeof self.indexedDB === 'undefined') {
+      return false;
+    }
+    workDB = function(type, callback) {
+      var db, req;
+      db = null;
+      req = self.indexedDB.open('dawn.jsDB', 1);
+      req.onsuccess = function(e) {
+        var objectStore, transaction;
+        db = req.result;
+        transaction = db.transaction(type, 'readwrite');
+        objectStore = transaction.objectStore(type);
+        return callback(objectStore);
+      };
+      req.onupgradeneeded = function(e) {
+        var objectStore;
+        db = event.target.result;
+        return objectStore = db.createObjectStore(type, {
+          keyPath: 'key'
+        });
+      };
+      return req.onerror = function(e) {
+        return ulti.log('IndexedDB Error: ' + e.target.errorCode);
+      };
+    };
+    ulti.indexedDBRead = function(type, key, callback) {
+      return workDB(type, function(os) {
+        return os.get(key).onsuccess = function(e) {
+          return callback(e.target.result);
+        };
+      });
+    };
+    return ulti.indexedDBWrite = function(type, obj, callback) {
+      return workDB(type, function(os) {
+        var add_os_req;
+        add_os_req = os.put(obj);
+        return add_os_req.onsuccess = function(e) {
+          return callback && callback(e.target.result);
+        };
+      });
+    };
+  })();
 
   if (typeof self === 'undefined') {
     for (i in ulti) {

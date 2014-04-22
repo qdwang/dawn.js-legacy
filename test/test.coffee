@@ -358,39 +358,49 @@ state.parseTable table
 
 ast = state.getAST []
 
-selectedB = Zipper.Zipper.select ast.syntax_tree, 'B'
-stringEqual selectedB.length.toString(), '1', 'Zipper Select Length 1'
-log selectedB[0].parent.parent.parent == ast.syntax_tree, 'Zipper Select 1'
+zipperNodeTest = ->
+    selectedB = Zipper.Zipper.select ast.syntax_tree, 'B'
+    stringEqual selectedB.length.toString(), '1', 'Zipper Select Length 1'
+    log selectedB[0].parent.parent.parent == ast.syntax_tree, 'Zipper Select 1'
 
 
-selectedBb = Zipper.Zipper.select ast.syntax_tree, 'B b'
-stringEqual selectedBb.length.toString(), '1', 'Zipper Select Length 2'
-log selectedBb[0].parent == selectedB[0], 'Zipper Select 2'
+    selectedBb = Zipper.Zipper.select ast.syntax_tree, 'B b'
+    stringEqual selectedBb.length.toString(), '1', 'Zipper Select Length 2'
+    log selectedBb[0].parent == selectedB[0], 'Zipper Select 2'
 
-selectedA = Zipper.Zipper.select ast.syntax_tree, 'A'
-stringEqual selectedA.length.toString(), '6', 'Zipper Select Length 3'
-log selectedA[0].parent.parent.parent == ast.syntax_tree, 'Zipper Select 3'
-
-
-selectedAb = Zipper.Zipper.select ast.syntax_tree, 'A b'
-stringEqual selectedAb.length.toString(), '3', 'Zipper Select Length 4'
-log selectedAb[0].parent == selectedA[0], 'Zipper Select 4'
+    selectedA = Zipper.Zipper.select ast.syntax_tree, 'A'
+    stringEqual selectedA.length.toString(), '6', 'Zipper Select Length 3'
+    log selectedA[0].parent.parent.parent == ast.syntax_tree, 'Zipper Select 3'
 
 
-selectedValBb = Zipper.Zipper.select ast.syntax_tree, '~3'
-stringEqual selectedValBb.length.toString(), '3', 'Zipper Value Select Length 1'
-log selectedValBb[0].parent == selectedA[0], 'Zipper Value Select 1 - 1'
-log selectedValBb[2].parent == selectedA[4], 'Zipper Value Select 1 - 2'
-
-selectedValbb = Zipper.Zipper.select ast.syntax_tree, '~bb'
-stringEqual selectedValbb.length.toString(), '1', 'Zipper Value Select Length 2'
-log selectedValbb[0].parent == selectedB[0], 'Zipper Value Select 2'
-
-selectedValBbb = Zipper.Zipper.select ast.syntax_tree, 'B ~bb'
-stringEqual selectedValBbb.length.toString(), '1', 'Zipper Value Select Length 3'
-log selectedValBbb[0] == selectedValbb[0], 'Zipper Value Select 3'
+    selectedAb = Zipper.Zipper.select ast.syntax_tree, 'A b'
+    stringEqual selectedAb.length.toString(), '3', 'Zipper Select Length 4'
+    log selectedAb[0].parent == selectedA[0], 'Zipper Select 4'
 
 
+    selectedValBb = Zipper.Zipper.select ast.syntax_tree, '~3'
+    stringEqual selectedValBb.length.toString(), '3', 'Zipper Value Select Length 1'
+    log selectedValBb[0].parent == selectedA[0], 'Zipper Value Select 1 - 1'
+    log selectedValBb[2].parent == selectedA[4], 'Zipper Value Select 1 - 2'
+
+    selectedValbb = Zipper.Zipper.select ast.syntax_tree, '~bb'
+    stringEqual selectedValbb.length.toString(), '1', 'Zipper Value Select Length 2'
+    log selectedValbb[0].parent == selectedB[0], 'Zipper Value Select 2'
+
+    selectedValBbb = Zipper.Zipper.select ast.syntax_tree, 'B ~bb'
+    stringEqual selectedValBbb.length.toString(), '1', 'Zipper Value Select Length 3'
+    log selectedValBbb[0] == selectedValbb[0], 'Zipper Value Select 3'
+
+
+zipperNodeTest()
+
+plain_tree = ulti.toObjString ast.syntax_tree
+plain_tree = JSON.parse plain_tree
+
+Zipper.Zipper.rebuildParent plain_tree, null
+ast.syntax_tree = plain_tree
+
+zipperNodeTest()
 
 
 ### SymbolTable ###

@@ -50,9 +50,7 @@ ulti =
 
         ret
 
-
-    log: (x, mark, indent) ->
-        surfix = ' - ' + if mark then mark else ''
+    toObjString: (obj, indent = 0) ->
         cache = []
         customStringify = (k, v) ->
             if typeof v == 'object' && v != null
@@ -63,8 +61,61 @@ ulti =
 
             return v
 
-        result = (JSON.stringify x, customStringify , if indent? then indent else 4) + surfix
-        cache = null
+        JSON.stringify obj, customStringify, indent
+
+
+
+    dump: (type, obj) ->
+        if ulti.indexedDBWrite
+            ulti.indexedDBWrite type, obj
+        else
+            fs = require 'fs'
+
+            key = obj.key
+            obj = ulti.toObjString obj
+
+            home = process.env.USERPROFILE or process.env.HOME
+            dawnjs_dir = home + '/.dawnjs/'
+            cache_dir = dawnjs_dir + 'cache/'
+
+            if not fs.existsSync dawnjs_dir
+                fs.mkdirSync dawnjs_dir
+
+            if not fs.existsSync cache_dir
+                fs.mkdirSync cache_dir
+
+            fs.writeFile (cache_dir + key + '.' + type), obj
+
+    load: (type, file_key, callback) ->
+        if ulti.indexedDBRead
+            ulti.indexedDBRead type, file_key, (res) ->
+                try
+                    res = JSON.parse res
+                catch
+                    null
+
+                callback res
+        else
+            fs = require 'fs'
+            home = process.env.USERPROFILE or process.env.HOME
+            dawnjs_dir = home + '/.dawnjs/'
+            cache_dir = dawnjs_dir + 'cache/'
+            file_name = cache_dir + file_key + '.' + type
+
+            console.log file_name
+            if fs.existsSync file_name
+                fs.readFile file_name, null, (err, res) ->
+                    try
+                        res = JSON.parse res
+                    catch
+                        null
+
+                    callback res
+
+
+    log: (x, mark, indent = 4) ->
+        surfix = ' - ' + if mark then mark else ''
+        result = ulti.toObjString(x, indent) + surfix
         console.log result
         result
 
@@ -98,8 +149,49 @@ ulti =
         len = mod_list.length
 
         ret = []
-#        while (curr_elem = mod_list.shift()) == undefined
 
+
+# indexedDB
+(->
+    if typeof self == 'undefined' or typeof self.indexedDB == 'undefined'
+        return false
+
+    workDB = (type, callback) ->
+        db = null
+
+        req = self.indexedDB.open 'dawn.jsDB', 1
+        req.onsuccess = (e) ->
+            db = req.result
+            transaction = db.transaction type, 'readwrite'
+            objectStore = transaction.objectStore type
+            callback objectStore
+
+        req.onupgradeneeded = (e) ->
+            db = event.target.result
+            objectStore = db.createObjectStore type, {keyPath: 'key'}
+
+        req.onerror = (e) ->
+            ulti.log 'IndexedDB Error: ' + e.target.errorCode
+
+    ulti.indexedDBRead = (type, key, callback) ->
+        workDB type, (os) ->
+            os.get(key).onsuccess = (e) ->
+                callback e.target.result
+
+    ulti.indexedDBWrite = (type, obj, callback) ->
+        workDB type, (os) ->
+            add_os_req = os.put obj
+
+            add_os_req.onsuccess = (e) ->
+                callback and callback e.target.result
+)()
+
+#for dump load test
+#ulti.dump 'ast', {key: 'abc', query: 'afbcdefg'}
+#setTimeout (->
+#    ulti.load 'ast', 'abc', (res) ->
+#        console.log res
+#), 1000
 
 if typeof self == 'undefined'
     for i of ulti

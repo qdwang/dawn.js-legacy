@@ -123,6 +123,22 @@
     return ret;
   };
 
+  Zipper.rebuildParent = function(syntax_node, parent) {
+    var leaf, _i, _len, _ref, _results;
+    if (typeof syntax_node.parent === 'string') {
+      syntax_node.parent = parent;
+    }
+    if (syntax_node.leaves) {
+      _ref = syntax_node.leaves;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        leaf = _ref[_i];
+        _results.push(Zipper.rebuildParent(leaf, syntax_node));
+      }
+      return _results;
+    }
+  };
+
   if (typeof self === 'undefined') {
     module.exports.Zipper = Zipper;
   } else {
