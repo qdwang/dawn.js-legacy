@@ -24,7 +24,7 @@ zipper.up()
 ```
 
 #### zipper.down
-turn current node to be its child node in recursively
+turn current node to be its specific child node in recursively
 ```
 zipper.down(
     css selector -> string
@@ -46,8 +46,7 @@ zipper.node()
 
 
 #### Zipper.select (static method)
-get nodes from css selector style syntax
-the default css selector syntax is Zipper.selectorAST
+get nodes from css selector style syntax, the default css selector syntax is Zipper.selectorAST
 ```
 Zipper.select(
    root node, -> object
