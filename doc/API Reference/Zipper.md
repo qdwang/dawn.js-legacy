@@ -89,3 +89,12 @@ Zipper.findParent(
     base node -> object
 )
 ```
+
+#### Zipper.rebuildParent (static method)
+rebuild the parent reference of nodes of syntax tree parsed from plain text
+```
+Zipper.rebuildParent(
+    syntax tree, -> object
+    parent for internal recursive usage -> null
+)
+```

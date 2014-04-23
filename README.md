@@ -38,7 +38,7 @@ npm install dawn.js
 * Coming soon...
 
 ## API Reference
-* [Flow](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/Flow.md) - a plugin system
+* [Flow](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/Flow.md) - the dawn.js plugin system
 * [MixMap](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/MixMap.md) - a reference grid system
 
 * [LexParser](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/LexParser.md) - a parser to tokenize the code script
