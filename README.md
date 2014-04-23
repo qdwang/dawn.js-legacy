@@ -15,7 +15,7 @@ npm install dawn.js
 ## Built in Features
 
 * Lexical Parser
-* Syntax Parser (include AST)
+* Syntax Parser (including AST)
 * Symbol Table Generator
 * Customizable Plugin System
 
