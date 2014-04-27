@@ -1,13 +1,36 @@
-BNF = require './../src/BNF-parser.js'
-Lexer = require './../src/lex-parser.js'
-LR1 = require './../src/LR1-parser.js'
-Zipper = require './../src/Zipper.js'
-IR = require './../src/IR.js'
-SymbolTable = require './../src/symbol-table.js'
-ulti = require './../src/ulti.js'
+if typeof self == 'undefined'
+    BNF = require './../src/BNF-parser.js'
+    Lexer = require './../src/lex-parser.js'
+    LR1 = require './../src/LR1-parser.js'
+    Zipper = require './../src/Zipper.js'
+    IR = require './../src/IR.js'
+    SymbolTable = require './../src/symbol-table.js'
+    ulti = require './../src/ulti.js'
+
+    BNFGrammar = BNF.BNFGrammar
+    LexParser = Lexer.LexParser
+    MixMap = IR.MixMap
+    SyntaxTable = LR1.SyntaxTable
+    SyntaxParser = LR1.SyntaxParser
+    Zipper = Zipper.Zipper
+    SymbolTable = SymbolTable.SymbolTable
+else
+    BNFGrammar = self.BNFGrammar
+    LexParser = self.LexParser
+    MixMap = self.MixMap
+    SyntaxParser = self.SyntaxParser
+    SyntaxTable = self.SyntaxTable
+    Zipper = self.Zipper
+    SymbolTable = self.SymbolTable
+    ulti = self.ulti
 
 log = ulti.log
 stringEqual = ulti.stringEqual
+
+if not ulti.indexedDBRead
+    home = process.env.USERPROFILE or process.env.HOME
+    dawnjs_dir = home + '/.dawnjs/'
+    cache_dir = dawnjs_dir + 'cache/'
 
 
 ### Ulti ###
@@ -30,10 +53,10 @@ A -> B * B
 A -> c
 """
 
-bnf = new BNF.BNFGrammar G
+bnf = new BNFGrammar G
 bnf.makePlainBNF()
 
-#log bnf.bnf_grammar_pairs, 'BNF', 4
+#log bnf_grammar_pairs, 'BNF', 4
 stringEqual bnf.bnf_grammar_pairs, """
 [["S",["E"]],["E",["A","A E!htp2inec+","E!htbz8sdr+ A","E!htbz8sdr+ A E!htp2inec+","E!ht1ife46 A","E!ht1ife46 A E!htp2inec+","E!ht1ife46 E!htbz8sdr+ A","E!ht1ife46 E!htbz8sdr+ A E!htp2inec+","A A+ B","A d+ B","B","B E!hu0sbrr7+","A","A E!ht62uakw","A E!htlus4sf","A E!htlus4sf E!ht62uakw","E!htvwq2yz+","B","B E!httrpl8n"]],["A",["a b"]],["B",["b"]],["B",["A","( A + A )"]],["A",["B * B"]],["A",["c"]],["E!ht1ife46",["b g"]],["E!htbz8sdr",["A g"]],["E!htp2inec",["B x"]],["E!hu0sbrr7",[", opt"]],["E!htlus4sf",["b g"]],["E!ht62uakw",["b g"]],["E!htvwq2yz",["A","B","d","d C+"]],["E!httrpl8n",["A","c"]]]
 """, 'BNF'
@@ -78,7 +101,7 @@ function foo(param1, param2){
 foo.prototype
 """
 
-lp = new Lexer.LexParser test_script, test_syntax
+lp = new LexParser test_script, test_syntax
 lp.tokenize()
 
 
@@ -95,7 +118,7 @@ sampleB = {S: {A: {}, B: {}, C: {D: {}}}}
 sampleC = [{A: [1]}, {B: [2]}, {C: [3]}, {D: [4]}]
 sampleD = {Q: [], W: {E: 1}, R: [2, 3]}
 
-mm = new IR.MixMap
+mm = new MixMap
 mm.arrange ['A', sampleA[3]], ['B', sampleB.S.A], ['C', sampleC[0]]
 mm.arrange ['B', sampleB.S.C], ['A', sampleA[4]], ['C', sampleC[1].B]
 mm.arrange ['A', sampleA[6]], ['B', sampleB.S.C.D], ['C', sampleC]
@@ -144,8 +167,8 @@ B -> A | ( A + A )
 A -> B * B
 A -> c
 """
-table = new LR1.SyntaxTable G, ['S'], [';']
-state = new LR1.SyntaxParser [['a', 2], ['b', 3], ['c', 2], ['a', 2], ['b', 3], ['c', 2], ['a', 2], ['b', 3], ['c', 2], ['b', 'bb'], ';']
+table = new SyntaxTable G, ['S'], [';']
+state = new SyntaxParser [['a', 2], ['b', 3], ['c', 2], ['a', 2], ['b', 3], ['c', 2], ['a', 2], ['b', 3], ['c', 2], ['b', 'bb'], ';']
 state.parseTable table
 
 #log state.tree, 'SyntaxTree1', 4
@@ -161,8 +184,8 @@ stringEqual ast.syntax_tree, """
 """, 'AST 1'
 
 
-table = new LR1.SyntaxTable G, ['S'], [';']
-state = new LR1.SyntaxParser [['a', 2], ['b', 3], ['c', 2], ['a', 2], ['b', 3], 'a', ['b', 2], ['*', '*'], ['b', 4], ['a', 2], ['b', 3], ['c', 2], ['b', 'bb'], ';']
+table = new SyntaxTable G, ['S'], [';']
+state = new SyntaxParser [['a', 2], ['b', 3], ['c', 2], ['a', 2], ['b', 3], 'a', ['b', 2], ['*', '*'], ['b', 4], ['a', 2], ['b', 3], ['c', 2], ['b', 'bb'], ';']
 state.parseTable table
 
 #log state.tree, 'SyntaxTree2', 4
@@ -180,8 +203,8 @@ stringEqual ast.syntax_tree, """
 
 
 
-table = new LR1.SyntaxTable G, ['S'], [';']
-state = new LR1.SyntaxParser [['a', 2], ['b', 3], ['d', 2], ['d', 2], ['c', 2], ['d', 2], ['b', 'bb'], ';']
+table = new SyntaxTable G, ['S'], [';']
+state = new SyntaxParser [['a', 2], ['b', 3], ['d', 2], ['d', 2], ['c', 2], ['d', 2], ['b', 'bb'], ';']
 
 state.parseTable table
 
@@ -208,8 +231,8 @@ A -> c
 B -> b
 """
 
-table = new LR1.SyntaxTable G, ['S'], [';']
-state = new LR1.SyntaxParser ['ax', 'gx','ax', 'gx','ax', 'gx', 'cx', 'cx', ';']
+table = new SyntaxTable G, ['S'], [';']
+state = new SyntaxParser ['ax', 'gx','ax', 'gx','ax', 'gx', 'cx', 'cx', ';']
 
 state.parseTable table
 
@@ -227,8 +250,8 @@ stringEqual ast.syntax_tree, """
 """, 'AST 4'
 
 
-table = new LR1.SyntaxTable G, ['S'], [';']
-state = new LR1.SyntaxParser ['cx', 'cx', ';']
+table = new SyntaxTable G, ['S'], [';']
+state = new SyntaxParser ['cx', 'cx', ';']
 
 state.parseTable table
 
@@ -253,8 +276,8 @@ S1 -> S2
 S2 -> S3
 S3 -> a b
 """
-table = new LR1.SyntaxTable G, ['S'], [';']
-state = new LR1.SyntaxParser ['a', 'b', 'a', 'b', ';']
+table = new SyntaxTable G, ['S'], [';']
+state = new SyntaxParser ['a', 'b', 'a', 'b', ';']
 
 state.parseTable table
 
@@ -278,8 +301,8 @@ S -> E+
 E -> a b End | c a b End | c A End
 A -> e t
 """
-table = new LR1.SyntaxTable G, ['S'], [';']
-state = new LR1.SyntaxParser [['a', 1], ['b', 2], 'End', ['a', 3], ['b', 4], ['a', 5], 'End' , ['c', 6], ['a', 7
+table = new SyntaxTable G, ['S'], [';']
+state = new SyntaxParser [['a', 1], ['b', 2], 'End', ['a', 3], ['b', 4], ['a', 5], 'End' , ['c', 6], ['a', 7
 ], ['b', 8], 'End', ['c', 9], ['e', 10], ['t', 11], 'End', ';']
 state.sync_lex = ['End', 'Fail', 'E']
 state.parseTable table
@@ -297,8 +320,8 @@ S1 -> S2
 S2 -> S3
 S3 -> a* b c d
 """
-table = new LR1.SyntaxTable G, ['Program'], [';']
-state = new LR1.SyntaxParser ['S1', 'a', 'b', 'c', 'd', ';']
+table = new SyntaxTable G, ['Program'], [';']
+state = new SyntaxParser ['S1', 'a', 'b', 'c', 'd', ';']
 
 state.parseTable table
 #log state.tree, 'SyntaxTree 7', 4
@@ -318,13 +341,13 @@ A -> c
 """
 
 sampleLex = [['a', '2'], ['b', '3'], ['c', '2'], ['a', '2'], ['b', '3'], ['c', '2'], ['a', '2'], ['b', '3'], ['c', '2'], ['b', 'bb'], ';']
-table = new LR1.SyntaxTable G, ['S'], [';']
+table = new SyntaxTable G, ['S'], [';']
 
-mm = new IR.MixMap
-LR1.SyntaxParser.Mix.mixer = ->
+mm = new MixMap
+SyntaxParser.Mix.mixer = ->
     mm.arrange.apply mm, arguments
 
-state = new LR1.SyntaxParser sampleLex
+state = new SyntaxParser sampleLex
 state.parseTable table
 
 ast = state.getAST []
@@ -352,42 +375,42 @@ B -> A | ( A + A )
 A -> B * B
 A -> c
 """
-table = new LR1.SyntaxTable G, ['S'], [';']
-state = new LR1.SyntaxParser [['a', '2'], ['b', '3'], ['c', '2'], ['a', '2'], ['b', '3'], ['c', '2'], ['a', '2'], ['b', '3'], ['c', '2'], ['b', 'bb'], ';']
+table = new SyntaxTable G, ['S'], [';']
+state = new SyntaxParser [['a', '2'], ['b', '3'], ['c', '2'], ['a', '2'], ['b', '3'], ['c', '2'], ['a', '2'], ['b', '3'], ['c', '2'], ['b', 'bb'], ';']
 state.parseTable table
 
 ast = state.getAST []
 
 zipperNodeTest = ->
-    selectedB = Zipper.Zipper.select ast.syntax_tree, 'B'
+    selectedB = Zipper.select ast.syntax_tree, 'B'
     stringEqual selectedB.length.toString(), '1', 'Zipper Select Length 1'
     log selectedB[0].parent.parent.parent == ast.syntax_tree, 'Zipper Select 1'
 
 
-    selectedBb = Zipper.Zipper.select ast.syntax_tree, 'B b'
+    selectedBb = Zipper.select ast.syntax_tree, 'B b'
     stringEqual selectedBb.length.toString(), '1', 'Zipper Select Length 2'
     log selectedBb[0].parent == selectedB[0], 'Zipper Select 2'
 
-    selectedA = Zipper.Zipper.select ast.syntax_tree, 'A'
+    selectedA = Zipper.select ast.syntax_tree, 'A'
     stringEqual selectedA.length.toString(), '6', 'Zipper Select Length 3'
     log selectedA[0].parent.parent.parent == ast.syntax_tree, 'Zipper Select 3'
 
 
-    selectedAb = Zipper.Zipper.select ast.syntax_tree, 'A b'
+    selectedAb = Zipper.select ast.syntax_tree, 'A b'
     stringEqual selectedAb.length.toString(), '3', 'Zipper Select Length 4'
     log selectedAb[0].parent == selectedA[0], 'Zipper Select 4'
 
 
-    selectedValBb = Zipper.Zipper.select ast.syntax_tree, '~3'
+    selectedValBb = Zipper.select ast.syntax_tree, '~3'
     stringEqual selectedValBb.length.toString(), '3', 'Zipper Value Select Length 1'
     log selectedValBb[0].parent == selectedA[0], 'Zipper Value Select 1 - 1'
     log selectedValBb[2].parent == selectedA[4], 'Zipper Value Select 1 - 2'
 
-    selectedValbb = Zipper.Zipper.select ast.syntax_tree, '~bb'
+    selectedValbb = Zipper.select ast.syntax_tree, '~bb'
     stringEqual selectedValbb.length.toString(), '1', 'Zipper Value Select Length 2'
     log selectedValbb[0].parent == selectedB[0], 'Zipper Value Select 2'
 
-    selectedValBbb = Zipper.Zipper.select ast.syntax_tree, 'B ~bb'
+    selectedValBbb = Zipper.select ast.syntax_tree, 'B ~bb'
     stringEqual selectedValBbb.length.toString(), '1', 'Zipper Value Select Length 3'
     log selectedValBbb[0] == selectedValbb[0], 'Zipper Value Select 3'
 
@@ -397,7 +420,7 @@ zipperNodeTest()
 plain_tree = ulti.toObjString ast.syntax_tree
 plain_tree = JSON.parse plain_tree
 
-Zipper.Zipper.rebuildParent plain_tree, null
+Zipper.rebuildParent plain_tree, null
 ast.syntax_tree = plain_tree
 
 zipperNodeTest()
@@ -505,11 +528,11 @@ sampleAST = {
     ]
 }
 
-mm = new IR.MixMap
-SymbolTable.SymbolTable.Mix.mixer = ->
+mm = new MixMap
+SymbolTable.Mix.mixer = ->
     mm.arrange.apply mm, arguments
 
-tables = SymbolTable.SymbolTable.walkGenerate sampleAST, {Receiver: ((x) -> x), Giver: null}, ['FN']
+tables = SymbolTable.walkGenerate sampleAST, {Receiver: ((x) -> x), Giver: null}, ['FN']
 log 4 == tables.length, 'SymbolTable Return Length 1'
 
 log 5 == mm.get(sampleAST, 'SymbolTable').stack.length, 'SymbolTable Stack Length 1'
@@ -540,11 +563,11 @@ log sampleAST.leaves[4].leaves[0].leaves[0] == mm.get(sampleAST.leaves[4], 'Symb
 log sampleAST.leaves[4].leaves[0].leaves[1] == mm.get(sampleAST.leaves[4], 'SymbolTable').stack[0].Giver, 'SymbolTable 14'
 
 
-mm = new IR.MixMap
-SymbolTable.SymbolTable.Mix.mixer = ->
+mm = new MixMap
+SymbolTable.Mix.mixer = ->
     mm.arrange.apply mm, arguments
 
-tables = SymbolTable.SymbolTable.walkGenerate sampleAST, {Receiver: ((x) -> x.value), Giver: null}, ['FN']
+tables = SymbolTable.walkGenerate sampleAST, {Receiver: ((x) -> x.value), Giver: null}, ['FN']
 log 4 == tables.length, 'SymbolTable Return Length 2'
 
 log 1 == mm.get(sampleAST, 'SymbolTable').stack[0].Receiver, 'SymbolTable 15'
@@ -562,3 +585,56 @@ log sampleAST.leaves[1].leaves[0].leaves[1] == mm.get(sampleAST.leaves[1].leaves
 log sampleAST.leaves[0].leaves[1] == mm.get(sampleAST.leaves[1].leaves[2], 'SymbolTable').lookUpTop({Receiver: 1}).Giver, 'SymbolTable LookUp 5'
 log sampleAST.leaves[3].leaves[1].leaves[0].leaves[1] == mm.get(sampleAST.leaves[1].leaves[2], 'SymbolTable').lookUpTop({Receiver: 8}).Giver, 'SymbolTable LookUp 6'
 log sampleAST.leaves[3].leaves[1] == mm.get(sampleAST.leaves[1].leaves[2], 'SymbolTable').lookUpTop({Receiver: 6}).Giver, 'SymbolTable LookUp 7'
+
+
+### ulti.dump / load ###
+
+G = """
+S -> E
+E -> b A B x | A+ B | A d+ B
+A -> a b
+B -> b
+B -> A | ( A + A )
+A -> B * B
+A -> c
+"""
+
+sampleLex = [['a', '2'], ['b', '3'], ['c', '2'], ['a', '2'], ['b', '3'], ['c', '2'], ['a', '2'], ['b', '3'], ['c', '2'], ['b', 'bb'], ';']
+table = new SyntaxTable G, ['S'], [';']
+
+mm = new MixMap
+SyntaxParser.Mix.mixer = ->
+    mm.arrange.apply mm, arguments
+
+state = new SyntaxParser sampleLex
+state.parseTable table
+
+ast = state.getAST []
+
+if ulti.indexedDBRead
+    indexedDB.deleteDatabase 'dawn.js'
+else
+    fs = require 'fs'
+    sample_ast_file = cache_dir + 'sample_ast.ast'
+    if fs.existsSync sample_ast_file
+        fs.unlinkSync sample_ast_file
+
+ulti.dump 'ast', 'sample_ast', {}
+ulti.dump 'ast', 'sample_ast', ast.syntax_tree # test cover
+
+ulti.load 'ast', 'sample_ast', (res) ->
+    Zipper.rebuildParent res, null, mm
+    ast.syntax_tree = res
+
+    log ast.syntax_tree.leaves[0].leaves[0].leaves[0].leaves[0] == mm.get(sampleLex[0], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 1'
+    log ast.syntax_tree.leaves[0].leaves[0].leaves[0].leaves[1] == mm.get(sampleLex[1], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 2'
+    log ast.syntax_tree.leaves[0].leaves[0].leaves[1].leaves[0] == mm.get(sampleLex[2], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 3'
+    log ast.syntax_tree.leaves[0].leaves[0].leaves[2].leaves[0] == mm.get(sampleLex[3], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 4'
+    log ast.syntax_tree.leaves[0].leaves[0].leaves[2].leaves[1] == mm.get(sampleLex[4], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 5'
+    log ast.syntax_tree.leaves[0].leaves[0].leaves[3].leaves[0] == mm.get(sampleLex[5], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 6'
+    log ast.syntax_tree.leaves[0].leaves[0].leaves[4].leaves[0] == mm.get(sampleLex[6], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 7'
+    log ast.syntax_tree.leaves[0].leaves[0].leaves[4].leaves[1] == mm.get(sampleLex[7], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 8'
+    log ast.syntax_tree.leaves[0].leaves[0].leaves[5].leaves[0] == mm.get(sampleLex[8], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 9'
+    log ast.syntax_tree.leaves[0].leaves[0].leaves[6].leaves[0] == mm.get(sampleLex[9], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 10'
+    log sampleLex[9] == mm.get(ast.syntax_tree.leaves[0].leaves[0].leaves[6].leaves[0], 'Lex'), 'After Dump/Load AST Lex MixMap 11'
+

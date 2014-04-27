@@ -10,33 +10,40 @@
 
   MixMap = function() {
     this.i = 1;
+    this.refs = {};
     this.ref_map = {};
     return this;
   };
 
   MixMap.prototype.arrange = function() {
-    var additional_pairs_attach, additional_pairs_main, apply_mapping, i, inner_map, key, m, pair, pairs2map, pairs_len, self, swaper, _i, _j, _k, _l, _len, _len1, _len2, _ref, _results;
+    var additional_pairs_attach, additional_pairs_main, apply_mapping, getOrCreateObjMMID, i, inner_map, key, m, pair, pairs2map, pairs_len, self, swaper, _i, _j, _k, _l, _len, _len1, _len2, _ref, _results;
     self = this;
     pairs2map = [].slice.call(arguments);
     pairs_len = pairs2map.length;
     if (pairs_len < 2) {
       return null;
     }
+    getOrCreateObjMMID = function(obj) {
+      var mm_id;
+      mm_id = obj['__MixMapID__'] || self.i++;
+      if (!obj['__MixMapID__']) {
+        obj['__MixMapID__'] = mm_id;
+        self.refs[mm_id] = obj;
+      }
+      return mm_id;
+    };
     apply_mapping = function(_pairs2map) {
       var i, mm_id, obj, obj_type, ref, _i, _ref, _results;
       obj_type = _pairs2map[0][0];
       obj = _pairs2map[0][1];
-      mm_id = obj['__MixMapID__'] || self.i++;
-      if (!obj['__MixMapID__']) {
-        obj['__MixMapID__'] = mm_id;
-      }
+      mm_id = getOrCreateObjMMID(obj);
       if (!self.ref_map[mm_id]) {
         self.ref_map[mm_id] = {};
       }
       _results = [];
       for (i = _i = 1, _ref = _pairs2map.length - 1; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
         ref = _pairs2map[i];
-        _results.push(self.ref_map[mm_id][ref[0]] = ref[1]);
+        _results.push(self.ref_map[mm_id][ref[0]] = getOrCreateObjMMID(ref[1]));
       }
       return _results;
     };
@@ -74,7 +81,7 @@
   };
 
   MixMap.prototype.get = function(obj, type) {
-    var ref;
+    var item, ref, ret;
     if (typeof obj !== 'object' || !obj['__MixMapID__']) {
       return null;
     }
@@ -82,10 +89,14 @@
     if (!ref) {
       return null;
     }
+    ret = {};
+    for (item in ref) {
+      ret[item] = this.refs[ref[item]];
+    }
     if (type) {
-      return ref[type];
+      return ret[type];
     } else {
-      return ref;
+      return ret;
     }
   };
 

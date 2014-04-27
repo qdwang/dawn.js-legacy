@@ -89,13 +89,16 @@
       };
       return JSON.stringify(obj, customStringify, indent);
     },
-    dump: function(type, obj) {
+    dump: function(type, file_key, obj) {
       var cache_dir, dawnjs_dir, fs, home, key;
       if (ulti.indexedDBWrite) {
-        return ulti.indexedDBWrite(type, obj);
+        return ulti.indexedDBWrite(type, {
+          key: file_key,
+          query: ulti.toObjString(obj)
+        });
       } else {
         fs = require('fs');
-        key = obj.key;
+        key = file_key;
         obj = ulti.toObjString(obj);
         home = process.env.USERPROFILE || process.env.HOME;
         dawnjs_dir = home + '/.dawnjs/';
@@ -113,12 +116,7 @@
       var cache_dir, dawnjs_dir, file_name, fs, home;
       if (ulti.indexedDBRead) {
         return ulti.indexedDBRead(type, file_key, function(res) {
-          try {
-            res = JSON.parse(res);
-          } catch (_error) {
-            null;
-          }
-          return callback(res);
+          return callback(JSON.parse(res.query));
         });
       } else {
         fs = require('fs');
@@ -126,16 +124,13 @@
         dawnjs_dir = home + '/.dawnjs/';
         cache_dir = dawnjs_dir + 'cache/';
         file_name = cache_dir + file_key + '.' + type;
-        console.log(file_name);
         if (fs.existsSync(file_name)) {
           return fs.readFile(file_name, null, function(err, res) {
-            try {
-              res = JSON.parse(res);
-            } catch (_error) {
-              null;
-            }
+            res = JSON.parse(res);
             return callback(res);
           });
+        } else {
+          return ulti.log('file not exist: ' + file_key);
         }
       }
     },
@@ -192,7 +187,7 @@
     workDB = function(type, callback) {
       var db, req;
       db = null;
-      req = self.indexedDB.open('dawn.jsDB', 1);
+      req = self.indexedDB.open('dawn.js', 1);
       req.onsuccess = function(e) {
         var objectStore, transaction;
         db = req.result;

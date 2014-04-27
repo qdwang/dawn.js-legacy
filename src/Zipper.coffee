@@ -98,13 +98,16 @@ Zipper.findParent = (attrs={}, node) ->
     ret
 
 # specific for syntax node
-Zipper.rebuildParent = (syntax_node, parent) ->
+Zipper.rebuildParent = (syntax_node, parent, mix_map) ->
     if typeof syntax_node.parent == 'string'
         syntax_node.parent = parent
 
+    if mix_map and syntax_node['__MixMapID__']
+        mix_map.refs[syntax_node['__MixMapID__']] = syntax_node
+
     if syntax_node.leaves
         for leaf in syntax_node.leaves
-            Zipper.rebuildParent leaf, syntax_node
+            Zipper.rebuildParent leaf, syntax_node, mix_map
 
 
 if typeof self == 'undefined'

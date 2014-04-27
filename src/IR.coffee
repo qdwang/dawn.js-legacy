@@ -6,6 +6,7 @@ else
 
 MixMap  = ->
     @i = 1
+    @refs = {}
     @ref_map = {}
     @
 
@@ -17,21 +18,25 @@ MixMap::arrange = -> # [type, object], [type, object] ...
     if pairs_len < 2
         return null
 
+    getOrCreateObjMMID = (obj) ->
+        mm_id = obj['__MixMapID__'] or self.i++
+        if not obj['__MixMapID__']
+            obj['__MixMapID__'] = mm_id
+            self.refs[mm_id] = obj
+
+        mm_id
+
     apply_mapping =  (_pairs2map) ->
         obj_type = _pairs2map[0][0]
         obj = _pairs2map[0][1]
 
-        mm_id = obj['__MixMapID__'] or self.i++
-        if not obj['__MixMapID__']
-            obj['__MixMapID__'] = mm_id
-
+        mm_id = getOrCreateObjMMID obj
         if not self.ref_map[mm_id]
             self.ref_map[mm_id] = {}
 
         for i in [1.._pairs2map.length - 1]
             ref = _pairs2map[i]
-            self.ref_map[mm_id][ref[0]] = ref[1]
-
+            self.ref_map[mm_id][ref[0]] = getOrCreateObjMMID ref[1]
 
     additional_pairs_main = []
     additional_pairs_attach = []
@@ -70,7 +75,11 @@ MixMap::get = (obj, type) ->
     if not ref
         return null
 
-    if type then ref[type] else ref
+    ret = {}
+    for item of ref
+        ret[item] = @refs[ref[item]]
+
+    if type then ret[type] else ret
 
 
 if typeof self == 'undefined'

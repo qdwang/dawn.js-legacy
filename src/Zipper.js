@@ -123,17 +123,20 @@
     return ret;
   };
 
-  Zipper.rebuildParent = function(syntax_node, parent) {
+  Zipper.rebuildParent = function(syntax_node, parent, mix_map) {
     var leaf, _i, _len, _ref, _results;
     if (typeof syntax_node.parent === 'string') {
       syntax_node.parent = parent;
+    }
+    if (mix_map && syntax_node['__MixMapID__']) {
+      mix_map.refs[syntax_node['__MixMapID__']] = syntax_node;
     }
     if (syntax_node.leaves) {
       _ref = syntax_node.leaves;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         leaf = _ref[_i];
-        _results.push(Zipper.rebuildParent(leaf, syntax_node));
+        _results.push(Zipper.rebuildParent(leaf, syntax_node, mix_map));
       }
       return _results;
     }

@@ -65,13 +65,13 @@ ulti =
 
 
 
-    dump: (type, obj) ->
+    dump: (type, file_key, obj) ->
         if ulti.indexedDBWrite
-            ulti.indexedDBWrite type, obj
+            ulti.indexedDBWrite type, {key: file_key, query: ulti.toObjString obj}
         else
             fs = require 'fs'
 
-            key = obj.key
+            key = file_key
             obj = ulti.toObjString obj
 
             home = process.env.USERPROFILE or process.env.HOME
@@ -89,12 +89,8 @@ ulti =
     load: (type, file_key, callback) ->
         if ulti.indexedDBRead
             ulti.indexedDBRead type, file_key, (res) ->
-                try
-                    res = JSON.parse res
-                catch
-                    null
+                callback JSON.parse res.query
 
-                callback res
         else
             fs = require 'fs'
             home = process.env.USERPROFILE or process.env.HOME
@@ -102,15 +98,12 @@ ulti =
             cache_dir = dawnjs_dir + 'cache/'
             file_name = cache_dir + file_key + '.' + type
 
-            console.log file_name
             if fs.existsSync file_name
                 fs.readFile file_name, null, (err, res) ->
-                    try
-                        res = JSON.parse res
-                    catch
-                        null
-
+                    res = JSON.parse res
                     callback res
+            else
+                ulti.log 'file not exist: ' + file_key
 
 
     log: (x, mark, indent = 4) ->
@@ -159,7 +152,7 @@ ulti =
     workDB = (type, callback) ->
         db = null
 
-        req = self.indexedDB.open 'dawn.jsDB', 1
+        req = self.indexedDB.open 'dawn.js', 1
         req.onsuccess = (e) ->
             db = req.result
             transaction = db.transaction type, 'readwrite'
@@ -187,7 +180,7 @@ ulti =
 )()
 
 #for dump load test
-#ulti.dump 'ast', {key: 'abc', query: 'afbcdefg'}
+#ulti.dump 'ast', 'abc', 'afbcdefg'
 #setTimeout (->
 #    ulti.load 'ast', 'abc', (res) ->
 #        console.log res
