@@ -420,7 +420,7 @@ zipperNodeTest()
 plain_tree = ulti.toObjString ast.syntax_tree
 plain_tree = JSON.parse plain_tree
 
-Zipper.rebuildParent plain_tree, null
+Zipper.rebuild plain_tree, null
 ast.syntax_tree = plain_tree
 
 zipperNodeTest()
@@ -623,7 +623,7 @@ ulti.dump 'ast', 'sample_ast', {}
 ulti.dump 'ast', 'sample_ast', ast.syntax_tree # test cover
 
 ulti.load 'ast', 'sample_ast', (res) ->
-    Zipper.rebuildParent res, null, mm
+    Zipper.rebuild res, null, mm
     ast.syntax_tree = res
 
     log ast.syntax_tree.leaves[0].leaves[0].leaves[0].leaves[0] == mm.get(sampleLex[0], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 1'

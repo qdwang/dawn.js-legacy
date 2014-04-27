@@ -169,13 +169,6 @@
     },
     jsonClone: function(json_obj) {
       return JSON.parse(JSON.stringify(json_obj));
-    },
-    diff: function(orig_list, mod_list) {
-      var len, ret;
-      orig_list = orig_list.slice();
-      mod_list = mod_list.slice();
-      len = mod_list.length;
-      return ret = [];
     }
   };
 

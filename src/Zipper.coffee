@@ -98,7 +98,7 @@ Zipper.findParent = (attrs={}, node) ->
     ret
 
 # specific for syntax node
-Zipper.rebuildParent = (syntax_node, parent, mix_map) ->
+Zipper.rebuild = (syntax_node, parent, mix_map) ->
     if typeof syntax_node.parent == 'string'
         syntax_node.parent = parent
 
@@ -107,7 +107,7 @@ Zipper.rebuildParent = (syntax_node, parent, mix_map) ->
 
     if syntax_node.leaves
         for leaf in syntax_node.leaves
-            Zipper.rebuildParent leaf, syntax_node, mix_map
+            Zipper.rebuild leaf, syntax_node, mix_map
 
 
 if typeof self == 'undefined'

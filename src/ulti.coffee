@@ -135,14 +135,6 @@ ulti =
         JSON.parse JSON.stringify json_obj
 
 
-    diff: (orig_list, mod_list) ->
-        orig_list = orig_list.slice()
-        mod_list = mod_list.slice()
-
-        len = mod_list.length
-
-        ret = []
-
 
 # indexedDB
 (->

@@ -386,7 +386,7 @@
 
   plain_tree = JSON.parse(plain_tree);
 
-  Zipper.rebuildParent(plain_tree, null);
+  Zipper.rebuild(plain_tree, null);
 
   ast.syntax_tree = plain_tree;
 
@@ -677,7 +677,7 @@
   ulti.dump('ast', 'sample_ast', ast.syntax_tree);
 
   ulti.load('ast', 'sample_ast', function(res) {
-    Zipper.rebuildParent(res, null, mm);
+    Zipper.rebuild(res, null, mm);
     ast.syntax_tree = res;
     log(ast.syntax_tree.leaves[0].leaves[0].leaves[0].leaves[0] === mm.get(sampleLex[0], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 1');
     log(ast.syntax_tree.leaves[0].leaves[0].leaves[0].leaves[1] === mm.get(sampleLex[1], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 2');

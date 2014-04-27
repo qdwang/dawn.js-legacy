@@ -123,7 +123,7 @@
     return ret;
   };
 
-  Zipper.rebuildParent = function(syntax_node, parent, mix_map) {
+  Zipper.rebuild = function(syntax_node, parent, mix_map) {
     var leaf, _i, _len, _ref, _results;
     if (typeof syntax_node.parent === 'string') {
       syntax_node.parent = parent;
@@ -136,7 +136,7 @@
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         leaf = _ref[_i];
-        _results.push(Zipper.rebuildParent(leaf, syntax_node, mix_map));
+        _results.push(Zipper.rebuild(leaf, syntax_node, mix_map));
       }
       return _results;
     }

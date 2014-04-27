@@ -50,6 +50,8 @@ npm install dawn.js
 
 * [Zipper](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/Zipper.md) - a set of utilities to deal with tree structure
 
+* [Ulti](https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/Ulti.md) - a set of helpers
+
 
 ## License
 MIT
