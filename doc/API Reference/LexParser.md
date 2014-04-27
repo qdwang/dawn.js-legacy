@@ -92,3 +92,12 @@ lex_parser.tokenize(
     cursor position -> number
 )
 ```
+
+#### LexParser.rebuild (static method)
+help to reconstruct mix map
+```
+SyntaxParser.rebuild(
+    lex list, -> array
+    mix map for recover -> MixMap
+)
+```
