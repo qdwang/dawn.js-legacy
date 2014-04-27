@@ -653,6 +653,25 @@
     return SyntaxParser.Mix.mixer.apply(this, arguments);
   };
 
+  SyntaxParser.rebuild = function(syntax_node, mix_map, parent) {
+    var leaf, _i, _len, _ref, _results;
+    if (typeof syntax_node.parent === 'string') {
+      syntax_node.parent = parent;
+    }
+    if (mix_map && syntax_node['__MixMapID__']) {
+      mix_map.refs[syntax_node['__MixMapID__']] = syntax_node;
+    }
+    if (syntax_node.leaves) {
+      _ref = syntax_node.leaves;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        leaf = _ref[_i];
+        _results.push(SyntaxParser.rebuild(leaf, mix_map, syntax_node));
+      }
+      return _results;
+    }
+  };
+
   if (typeof self === 'undefined') {
     module.exports.SyntaxTable = SyntaxTable;
     module.exports.SyntaxParser = SyntaxParser;

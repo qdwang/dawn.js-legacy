@@ -85,12 +85,23 @@
           }
           cache.push(v);
         }
+        if (v instanceof Function) {
+          return v.toString();
+        }
         return v;
       };
       return JSON.stringify(obj, customStringify, indent);
     },
     dump: function(type, file_key, obj) {
-      var cache_dir, dawnjs_dir, fs, home, key;
+      var cache_dir, dawnjs_dir, fs, home, item, key, _i, _len;
+      if (obj instanceof Array) {
+        for (_i = 0, _len = obj.length; _i < _len; _i++) {
+          item = obj[_i];
+          if (item['__MixMapID__']) {
+            item.push('__MixMapID__' + item['__MixMapID__']);
+          }
+        }
+      }
       if (ulti.indexedDBWrite) {
         return ulti.indexedDBWrite(type, {
           key: file_key,
@@ -113,10 +124,27 @@
       }
     },
     load: function(type, file_key, callback) {
-      var cache_dir, dawnjs_dir, file_name, fs, home;
+      var cache_dir, dawnjs_dir, file_name, fs, home, lex_file_rebuild;
+      lex_file_rebuild = function(res) {
+        var item, _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = res.length; _i < _len; _i++) {
+          item = res[_i];
+          if (item.length === 3 && item[2].indexOf('__MixMapID__') === 0) {
+            _results.push(item['__MixMapID__'] = parseInt(item.pop().replace('__MixMapID__', '')));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
       if (ulti.indexedDBRead) {
         return ulti.indexedDBRead(type, file_key, function(res) {
-          return callback(JSON.parse(res.query));
+          res = JSON.parse(res.query);
+          if (res instanceof Array) {
+            lex_file_rebuild(res);
+          }
+          return callback(res);
         });
       } else {
         fs = require('fs');
@@ -127,6 +155,9 @@
         if (fs.existsSync(file_name)) {
           return fs.readFile(file_name, null, function(err, res) {
             res = JSON.parse(res);
+            if (res instanceof Array) {
+              lex_file_rebuild(res);
+            }
             return callback(res);
           });
         } else {

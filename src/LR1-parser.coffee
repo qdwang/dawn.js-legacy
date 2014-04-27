@@ -541,6 +541,18 @@ SyntaxParser.Mix = ->
     SyntaxParser.Mix.mixer.apply @, arguments
 
 
+SyntaxParser.rebuild = (syntax_node, mix_map, parent) ->
+    if typeof syntax_node.parent == 'string'
+        syntax_node.parent = parent
+
+    if mix_map and syntax_node['__MixMapID__']
+        mix_map.refs[syntax_node['__MixMapID__']] = syntax_node
+
+    if syntax_node.leaves
+        for leaf in syntax_node.leaves
+            SyntaxParser.rebuild leaf, mix_map, syntax_node
+
+
 if typeof self == 'undefined'
     module.exports.SyntaxTable = SyntaxTable
     module.exports.SyntaxParser = SyntaxParser

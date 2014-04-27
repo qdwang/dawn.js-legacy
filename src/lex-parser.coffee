@@ -75,6 +75,11 @@ LexParser::tokenize = (cursor_pos) ->
 
     @
 
+LexParser.rebuild = (lex_list, mix_map) ->
+    for lex_pair in lex_list
+        if lex_pair['__MixMapID__']
+            mix_map.refs[lex_pair['__MixMapID__']] = lex_pair
+
 
 if typeof self == 'undefined'
     module.exports.LexParser = LexParser

@@ -160,7 +160,7 @@ syntax_parser.parseTable(
 )
 ```
 
-#### SyntaxParser.Mix
+#### SyntaxParser.Mix (static method)
 this mix function will be invoked during syntax_parser.generateTree
 if `SyntaxParser.Mix.mixer` is defined as a function, it will work
 ```
@@ -172,3 +172,11 @@ SyntaxParser.Mix.mixer = function(){
 }
 ```
 
+#### SyntaxParser.rebuild (static method)
+rebuild the parent reference of nodes of syntax tree parsed from plain text of syntax tree, and help to reconstruct mix map
+```
+SyntaxParser.rebuild(
+    non-parent syntax tree, -> object
+    mix map for recover -> MixMap
+)
+```

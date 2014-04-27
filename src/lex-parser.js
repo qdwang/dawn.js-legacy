@@ -80,6 +80,20 @@
     return this;
   };
 
+  LexParser.rebuild = function(lex_list, mix_map) {
+    var lex_pair, _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = lex_list.length; _i < _len; _i++) {
+      lex_pair = lex_list[_i];
+      if (lex_pair['__MixMapID__']) {
+        _results.push(mix_map.refs[lex_pair['__MixMapID__']] = lex_pair);
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
+  };
+
   if (typeof self === 'undefined') {
     module.exports.LexParser = LexParser;
   } else {

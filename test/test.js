@@ -386,7 +386,7 @@
 
   plain_tree = JSON.parse(plain_tree);
 
-  Zipper.rebuild(plain_tree, null);
+  SyntaxParser.rebuild(plain_tree);
 
   ast.syntax_tree = plain_tree;
 
@@ -676,20 +676,26 @@
 
   ulti.dump('ast', 'sample_ast', ast.syntax_tree);
 
+  ulti.dump('lex', 'sample_lex', sampleLex);
+
   ulti.load('ast', 'sample_ast', function(res) {
-    Zipper.rebuild(res, null, mm);
+    SyntaxParser.rebuild(res, mm);
     ast.syntax_tree = res;
-    log(ast.syntax_tree.leaves[0].leaves[0].leaves[0].leaves[0] === mm.get(sampleLex[0], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 1');
-    log(ast.syntax_tree.leaves[0].leaves[0].leaves[0].leaves[1] === mm.get(sampleLex[1], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 2');
-    log(ast.syntax_tree.leaves[0].leaves[0].leaves[1].leaves[0] === mm.get(sampleLex[2], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 3');
-    log(ast.syntax_tree.leaves[0].leaves[0].leaves[2].leaves[0] === mm.get(sampleLex[3], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 4');
-    log(ast.syntax_tree.leaves[0].leaves[0].leaves[2].leaves[1] === mm.get(sampleLex[4], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 5');
-    log(ast.syntax_tree.leaves[0].leaves[0].leaves[3].leaves[0] === mm.get(sampleLex[5], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 6');
-    log(ast.syntax_tree.leaves[0].leaves[0].leaves[4].leaves[0] === mm.get(sampleLex[6], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 7');
-    log(ast.syntax_tree.leaves[0].leaves[0].leaves[4].leaves[1] === mm.get(sampleLex[7], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 8');
-    log(ast.syntax_tree.leaves[0].leaves[0].leaves[5].leaves[0] === mm.get(sampleLex[8], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 9');
-    log(ast.syntax_tree.leaves[0].leaves[0].leaves[6].leaves[0] === mm.get(sampleLex[9], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 10');
-    return log(sampleLex[9] === mm.get(ast.syntax_tree.leaves[0].leaves[0].leaves[6].leaves[0], 'Lex'), 'After Dump/Load AST Lex MixMap 11');
+    return ulti.load('lex', 'sample_lex', function(lex_res) {
+      LexParser.rebuild(lex_res, mm);
+      sampleLex = lex_res;
+      log(ast.syntax_tree.leaves[0].leaves[0].leaves[0].leaves[0] === mm.get(sampleLex[0], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 1');
+      log(ast.syntax_tree.leaves[0].leaves[0].leaves[0].leaves[1] === mm.get(sampleLex[1], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 2');
+      log(ast.syntax_tree.leaves[0].leaves[0].leaves[1].leaves[0] === mm.get(sampleLex[2], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 3');
+      log(ast.syntax_tree.leaves[0].leaves[0].leaves[2].leaves[0] === mm.get(sampleLex[3], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 4');
+      log(ast.syntax_tree.leaves[0].leaves[0].leaves[2].leaves[1] === mm.get(sampleLex[4], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 5');
+      log(ast.syntax_tree.leaves[0].leaves[0].leaves[3].leaves[0] === mm.get(sampleLex[5], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 6');
+      log(ast.syntax_tree.leaves[0].leaves[0].leaves[4].leaves[0] === mm.get(sampleLex[6], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 7');
+      log(ast.syntax_tree.leaves[0].leaves[0].leaves[4].leaves[1] === mm.get(sampleLex[7], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 8');
+      log(ast.syntax_tree.leaves[0].leaves[0].leaves[5].leaves[0] === mm.get(sampleLex[8], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 9');
+      log(ast.syntax_tree.leaves[0].leaves[0].leaves[6].leaves[0] === mm.get(sampleLex[9], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 10');
+      return log(sampleLex[9] === mm.get(ast.syntax_tree.leaves[0].leaves[0].leaves[6].leaves[0], 'Lex'), 'After Dump/Load AST Lex MixMap 11');
+    });
   });
 
 }).call(this);

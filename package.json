@@ -1,6 +1,6 @@
 {
   "name": "dawn.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "dawn.js, bring intelligence to coding",
   "scripts": {
     "test": "test/test.js"

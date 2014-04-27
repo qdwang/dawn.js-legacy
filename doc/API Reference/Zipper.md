@@ -89,12 +89,3 @@ Zipper.findParent(
 )
 ```
 
-#### Zipper.rebuild (static method)
-rebuild the parent reference of nodes of syntax tree parsed from plain text of syntax tree
-```
-Zipper.rebuild(
-    syntax tree, -> object
-    parent for internal recursive usage, -> null
-    mix map for recover -> MixMap
-)
-```

@@ -59,6 +59,9 @@ ulti =
 
                 cache.push v
 
+            if v instanceof Function
+                return v.toString()
+
             return v
 
         JSON.stringify obj, customStringify, indent
@@ -66,6 +69,11 @@ ulti =
 
 
     dump: (type, file_key, obj) ->
+        if obj instanceof Array
+            for item in obj
+                if item['__MixMapID__']
+                    item.push '__MixMapID__' + item['__MixMapID__']
+
         if ulti.indexedDBWrite
             ulti.indexedDBWrite type, {key: file_key, query: ulti.toObjString obj}
         else
@@ -87,10 +95,18 @@ ulti =
             fs.writeFile (cache_dir + key + '.' + type), obj
 
     load: (type, file_key, callback) ->
+        lex_file_rebuild = (res) ->
+            for item in res
+                if item.length == 3 and item[2].indexOf('__MixMapID__') == 0
+                    item['__MixMapID__'] = parseInt(item.pop().replace '__MixMapID__', '')
+
         if ulti.indexedDBRead
             ulti.indexedDBRead type, file_key, (res) ->
-                callback JSON.parse res.query
+                res = JSON.parse res.query
+                if res instanceof Array
+                    lex_file_rebuild res
 
+                callback res
         else
             fs = require 'fs'
             home = process.env.USERPROFILE or process.env.HOME
@@ -101,6 +117,9 @@ ulti =
             if fs.existsSync file_name
                 fs.readFile file_name, null, (err, res) ->
                     res = JSON.parse res
+                    if res instanceof Array
+                        lex_file_rebuild res
+
                     callback res
             else
                 ulti.log 'file not exist: ' + file_key
