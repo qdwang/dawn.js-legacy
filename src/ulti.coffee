@@ -75,7 +75,7 @@ ulti =
                     item.push '__MixMapID__' + item['__MixMapID__']
 
         if ulti.indexedDBWrite
-            ulti.indexedDBWrite type, {key: file_key, query: ulti.toObjString obj}
+            ulti.indexedDBWrite type, {key: file_key + '.' + type, query: ulti.toObjString obj}
         else
             fs = require 'fs'
 
@@ -161,6 +161,7 @@ ulti =
         return false
 
     workDB = (type, callback) ->
+        type = 'dawn.js'
         db = null
 
         req = self.indexedDB.open 'dawn.js', 1
@@ -179,7 +180,7 @@ ulti =
 
     ulti.indexedDBRead = (type, key, callback) ->
         workDB type, (os) ->
-            os.get(key).onsuccess = (e) ->
+            os.get(key + '.' + type).onsuccess = (e) ->
                 callback e.target.result
 
     ulti.indexedDBWrite = (type, obj, callback) ->

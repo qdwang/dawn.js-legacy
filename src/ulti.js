@@ -104,7 +104,7 @@
       }
       if (ulti.indexedDBWrite) {
         return ulti.indexedDBWrite(type, {
-          key: file_key,
+          key: file_key + '.' + type,
           query: ulti.toObjString(obj)
         });
       } else {
@@ -210,6 +210,7 @@
     }
     workDB = function(type, callback) {
       var db, req;
+      type = 'dawn.js';
       db = null;
       req = self.indexedDB.open('dawn.js', 1);
       req.onsuccess = function(e) {
@@ -232,7 +233,7 @@
     };
     ulti.indexedDBRead = function(type, key, callback) {
       return workDB(type, function(os) {
-        return os.get(key).onsuccess = function(e) {
+        return os.get(key + '.' + type).onsuccess = function(e) {
           return callback(e.target.result);
         };
       });
