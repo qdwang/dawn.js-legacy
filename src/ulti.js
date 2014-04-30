@@ -200,6 +200,21 @@
     },
     jsonClone: function(json_obj) {
       return JSON.parse(JSON.stringify(json_obj));
+    },
+    fileWalk: function(root_dir, handler) {
+      var fs, ls, name, _i, _len, _results;
+      fs = require('fs');
+      ls = fs.readdirSync(root_dir);
+      _results = [];
+      for (_i = 0, _len = ls.length; _i < _len; _i++) {
+        name = ls[_i];
+        if (fs.lstatSync(root_dir + name).isDirectory()) {
+          _results.push(ulti.fileWalk(root_dir + name + '/', handler));
+        } else {
+          _results.push(handler(root_dir + name));
+        }
+      }
+      return _results;
     }
   };
 

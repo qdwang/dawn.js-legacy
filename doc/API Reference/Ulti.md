@@ -125,3 +125,12 @@ ulti.jsonClone(
     object -> object
 )
 ```
+
+#### ulti.fileWalk
+walk directory recursively with handler
+```
+ulti.fileWalk(
+    root directory path, -> string
+    handler -> function
+)
+```

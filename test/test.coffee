@@ -641,5 +641,3 @@ ulti.load 'ast', 'sample_ast', (res) ->
         log ast.syntax_tree.leaves[0].leaves[0].leaves[5].leaves[0] == mm.get(sampleLex[8], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 9'
         log ast.syntax_tree.leaves[0].leaves[0].leaves[6].leaves[0] == mm.get(sampleLex[9], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 10'
         log sampleLex[9] == mm.get(ast.syntax_tree.leaves[0].leaves[0].leaves[6].leaves[0], 'Lex'), 'After Dump/Load AST Lex MixMap 11'
-
-

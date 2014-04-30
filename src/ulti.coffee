@@ -154,6 +154,15 @@ ulti =
         JSON.parse JSON.stringify json_obj
 
 
+    fileWalk: (root_dir, handler) ->
+        fs = require 'fs'
+
+        ls = fs.readdirSync root_dir
+        for name in ls
+            if fs.lstatSync(root_dir + name).isDirectory()
+                ulti.fileWalk root_dir + name + '/', handler
+            else
+                handler root_dir + name
 
 # indexedDB
 (->
