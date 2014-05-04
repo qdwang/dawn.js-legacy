@@ -124,6 +124,14 @@ ulti =
             else
                 ulti.log 'file not exist: ' + file_key
 
+    existLocalCache: (type, file_key) ->
+        fs = require 'fs'
+        home = process.env.USERPROFILE or process.env.HOME
+        dawnjs_dir = home + '/.dawnjs/'
+        cache_dir = dawnjs_dir + 'cache/'
+        file_name = cache_dir + file_key + '.' + type
+
+        fs.existsSync file_name
 
     log: (x, mark, indent = 4) ->
         surfix = ' - ' + if mark then mark else ''

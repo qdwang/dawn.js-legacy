@@ -96,6 +96,16 @@ ulti.load(
 )
 ```
 
+#### ulti.existLocalCache
+detect if exist dumped cache from ~/.dawnjs/cache/
+
+```
+ulti.existLocalCache(
+    type of object, -> string
+    unique file key name -> string
+)
+```
+
 
 #### ulti.log
 log method for debug

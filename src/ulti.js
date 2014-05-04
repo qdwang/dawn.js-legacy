@@ -165,6 +165,15 @@
         }
       }
     },
+    existLocalCache: function(type, file_key) {
+      var cache_dir, dawnjs_dir, file_name, fs, home;
+      fs = require('fs');
+      home = process.env.USERPROFILE || process.env.HOME;
+      dawnjs_dir = home + '/.dawnjs/';
+      cache_dir = dawnjs_dir + 'cache/';
+      file_name = cache_dir + file_key + '.' + type;
+      return fs.existsSync(file_name);
+    },
     log: function(x, mark, indent) {
       var result, surfix;
       if (indent == null) {
