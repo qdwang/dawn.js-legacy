@@ -13,24 +13,33 @@
     return this;
   };
 
-  localService.prototype.generate = function(parser, reparse) {
+  localService.prototype.generate = function(parser, only, reparse) {
     var _this;
+    if (only == null) {
+      only = [];
+    }
     if (reparse == null) {
       reparse = false;
     }
     _this = this;
     return ulti.fileWalk(this.dir_path, function(file_path) {
-      var content, fs, item, parse_result, _i, _len, _results;
+      var content, fs, item, o, parse_result, _i, _j, _len, _len1, _results;
+      for (_i = 0, _len = only.length; _i < _len; _i++) {
+        o = only[_i];
+        if (o !== file_path.slice(-3)) {
+          return false;
+        }
+      }
       fs = require('fs');
       content = fs.readFileSync(file_path);
-      parse_result = parser(file_path, content);
+      parse_result = parser(file_path, content.toString());
       _results = [];
-      for (_i = 0, _len = parse_result.length; _i < _len; _i++) {
-        item = parse_result[_i];
-        if (!reparse && ulti.existLocalCache(_this.type, encodeURIComponent(file_path))) {
+      for (_j = 0, _len1 = parse_result.length; _j < _len1; _j++) {
+        item = parse_result[_j];
+        if (!reparse && ulti.existLocalCache(item.type, encodeURIComponent(file_path))) {
           continue;
         }
-        _results.push(ulti.dump(_this.type, encodeURIComponent(file_path), item.value));
+        _results.push(ulti.dump(item.type, encodeURIComponent(file_path), item.value));
       }
       return _results;
     });

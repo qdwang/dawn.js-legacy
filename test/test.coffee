@@ -6,6 +6,8 @@ if typeof self == 'undefined'
     IR = require './../src/IR.js'
     SymbolTable = require './../src/symbol-table.js'
     ulti = require './../src/ulti.js'
+    localService = require './../src/services/local.js'
+    Flow = require './../src/flow.js'
 
     BNFGrammar = BNF.BNFGrammar
     LexParser = Lexer.LexParser
@@ -14,6 +16,7 @@ if typeof self == 'undefined'
     SyntaxParser = LR1.SyntaxParser
     Zipper = Zipper.Zipper
     SymbolTable = SymbolTable.SymbolTable
+    Flow = Flow.Flow
 else
     BNFGrammar = self.BNFGrammar
     LexParser = self.LexParser
@@ -587,6 +590,88 @@ log sampleAST.leaves[3].leaves[1].leaves[0].leaves[1] == mm.get(sampleAST.leaves
 log sampleAST.leaves[3].leaves[1] == mm.get(sampleAST.leaves[1].leaves[2], 'SymbolTable').lookUpTop({Receiver: 6}).Giver, 'SymbolTable LookUp 7'
 
 
+### services / local ###
+ls = new localService.localService __dirname + '/../'
+parser = (fp, content) ->
+
+    lex_syntax =
+        'String': /'.*?[^\\]'|".*?[^\\]"/
+        'Dot': /\./
+        'Func': /function/
+        'StmtEnd': /;|\n/
+        'Assign': /\=/
+        'Pl': /\(/
+        'Pr': /\)/
+        'Bl': /\{/
+        'Br': /\}/
+        'Comma': /\,/
+        'Var': /var/
+        'Id': /[a-zA-Z_$][\w_$]*/
+
+
+    grammar = """
+    Program -> S+
+    S -> SGO StmtEnd | StmtEnd
+    SGO -> Obj | StmtEnd | Assignment
+    Assignment -> Var* Receiver Assign Giver
+    Receiver -> Obj
+    Giver -> Obj | Function
+    Function -> Func Id* Pl Args* Pr Bl S* Br
+    Obj -> Id (Dot Id)* | Bl Br
+    Args -> Id (Comma Id)*
+    """
+
+    markers = {
+        Receiver: (
+            (x) -> getObjectName x
+        ),
+        Giver: (
+            (x) -> x
+        )}
+
+
+    getObjectName = (obj_node, top=false) ->
+        ids = Zipper.select obj_node, 'Id'
+        name = ''
+        for id in ids
+            name += id.value + '.'
+            if top
+                break
+
+        name.slice(0, -1)
+
+    args =
+        script: content
+        lex_syntax: lex_syntax
+        cursor_pos: 0
+
+        grammar: grammar
+        start_stmt: ['Program']
+        sync_lex: ['StmtEnd', 'ParseFail', 'S']
+        mix_map: new MixMap
+        ast_cutter: []
+
+        markers: markers
+        scope_rules: ['Function']
+
+
+    flow = new Flow args
+    flow.append([
+        LexParser.flow
+        SyntaxParser.flow
+    ])
+    flow.finish()
+
+    [
+        {type: 'ast', value: flow.result('ast')},
+        {type: 'lex', value: flow.result('lex_list')},
+        {type: 'mm', value: flow.result('mix_map')}
+    ]
+
+ls.generate parser, ['.js'], true
+
+
+
 ### ulti.dump / load ###
 
 G = """
@@ -641,3 +726,4 @@ ulti.load 'ast', 'sample_ast', (res) ->
         log ast.syntax_tree.leaves[0].leaves[0].leaves[5].leaves[0] == mm.get(sampleLex[8], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 9'
         log ast.syntax_tree.leaves[0].leaves[0].leaves[6].leaves[0] == mm.get(sampleLex[9], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 10'
         log sampleLex[9] == mm.get(ast.syntax_tree.leaves[0].leaves[0].leaves[6].leaves[0], 'Lex'), 'After Dump/Load AST Lex MixMap 11'
+
