@@ -668,9 +668,32 @@ parser = (fp, content) ->
         {type: 'mm', value: flow.result('mix_map')}
     ]
 
-ls.generate parser, ['.js'], true
+ls.generate parser, ['.js'], false
 
 
+ls_ast = null
+ls_lex = null
+ls_mm = null
+
+cb = ->
+    if ls_mm and ls_ast and ls_lex
+        ls_mm = MixMap.rebuild ls_mm
+        LexParser.rebuild ls_lex, ls_mm
+        SyntaxParser.rebuild ls_ast, ls_mm
+
+        log ls_ast.leaves[0].leaves[2].leaves[0].leaves[9] == ls_mm.get(ls_lex[21], 'SyntaxNode'), 'Lex AST Load From Local Service'
+
+lr1_parser_lex = ls.get (__dirname + '/../src/LR1-parser.js'), 'lex', (res) ->
+    ls_lex = res
+    cb()
+
+lr1_parser_ast = ls.get (__dirname + '/../src/LR1-parser.js'), 'ast', (res) ->
+    ls_ast = res
+    cb()
+
+lr1_parser_mm = ls.get (__dirname + '/../src/LR1-parser.js'), 'mm', (res) ->
+    ls_mm = res
+    cb()
 
 ### ulti.dump / load ###
 

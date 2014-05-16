@@ -100,6 +100,13 @@
     }
   };
 
+  MixMap.rebuild = function(mm) {
+    var new_mm;
+    new_mm = new MixMap;
+    new_mm.ref_map = mm.ref_map;
+    return new_mm;
+  };
+
   if (typeof self === 'undefined') {
     module.exports.MixMap = MixMap;
   } else {

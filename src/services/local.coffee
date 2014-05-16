@@ -25,8 +25,8 @@ localService::generate = (parser, only=[], reparse=false) ->
             ulti.dump item.type, encodeURIComponent(file_path), item.value
     )
 
-localService::get = (file_path, type, cb) ->
-    ulti.load type, encodeURIComponent(file_path), cb
+localService::get = (file_path, type, callback) ->
+    ulti.load type, encodeURIComponent(file_path), callback
 
 
 module.exports.localService = localService

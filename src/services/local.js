@@ -45,8 +45,8 @@
     });
   };
 
-  localService.prototype.get = function(file_path, type, cb) {
-    return ulti.load(type, encodeURIComponent(file_path), cb);
+  localService.prototype.get = function(file_path, type, callback) {
+    return ulti.load(type, encodeURIComponent(file_path), callback);
   };
 
   module.exports.localService = localService;

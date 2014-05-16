@@ -81,6 +81,10 @@ MixMap::get = (obj, type) ->
 
     if type then ret[type] else ret
 
+MixMap.rebuild = (mm) ->
+    new_mm = new MixMap
+    new_mm.ref_map = mm.ref_map
+    new_mm
 
 if typeof self == 'undefined'
     module.exports.MixMap = MixMap
