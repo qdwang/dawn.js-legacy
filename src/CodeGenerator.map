@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "CodeGenerator.js",
+  "sourceRoot": "",
+  "sources": [
+    "CodeGenerator.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA;AAAA"
+}

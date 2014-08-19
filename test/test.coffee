@@ -750,3 +750,69 @@ ulti.load 'ast', 'sample_ast', (res) ->
         log ast.syntax_tree.leaves[0].leaves[0].leaves[6].leaves[0] == mm.get(sampleLex[9], 'SyntaxNode'), 'After Dump/Load AST Lex MixMap 10'
         log sampleLex[9] == mm.get(ast.syntax_tree.leaves[0].leaves[0].leaves[6].leaves[0], 'Lex'), 'After Dump/Load AST Lex MixMap 11'
 
+
+### Code Generator ###
+lex_syntax =
+    'String': /'.*?[^\\]'|".*?[^\\]"/
+    'Dot': /\./
+    'Func': /function/
+    'StmtEnd': /;|\n/
+    'Assign': /\=/
+    'Pl': /\(/
+    'Pr': /\)/
+    'Bl': /\{/
+    'Br': /\}/
+    'Comma': /\,/
+    'Var': /var/
+    'Id': /[a-zA-Z_$][\w_$]*/
+
+
+grammar = """
+Program -> S+
+S -> SGO StmtEnd | StmtEnd
+SGO -> Obj | StmtEnd | Assignment
+Assignment -> Var* Receiver Assign Giver
+Receiver -> Obj
+Giver -> Obj | Function
+Function -> Func Id* Pl Args* Pr Bl S* Br
+Obj -> Id (Dot Id)* | Bl Br
+Args -> Id (Comma Id)*
+"""
+
+script = '''
+  var scope1 = function(){
+        var foo = function(){};
+        var bar = {};
+        bar.ccc = {};
+
+        foo.prototype.another = function(arg3, arg4){
+            var bar = {};
+            bar.abc = {};
+
+            bar;
+            foo;
+        };
+
+        bar;
+
+    };
+'''
+
+
+args =
+    script: script
+    lex_syntax: lex_syntax
+
+    grammar: grammar
+    start_stmt: ['Program']
+    sync_lex: ['StmtEnd', 'ParseFail', 'S']
+    mix_map: new MixMap
+    ast_cutter: []
+
+    scope_rules: ['Function']
+
+flow = new Flow args
+flow.append [LexParser.flow, SyntaxParser.flow]
+flow.finish()
+
+log flow.result 'ast'
