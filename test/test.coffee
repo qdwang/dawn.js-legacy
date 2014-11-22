@@ -8,6 +8,7 @@ if typeof self == 'undefined'
     ulti = require './../src/ulti.js'
     localService = require './../src/services/local.js'
     Flow = require './../src/flow.js'
+    CodeGen = require './../src/code-gen.js'
 
     BNFGrammar = BNF.BNFGrammar
     LexParser = Lexer.LexParser
@@ -17,8 +18,10 @@ if typeof self == 'undefined'
     Zipper = Zipper.Zipper
     SymbolTable = SymbolTable.SymbolTable
     Flow = Flow.Flow
+    CodeGen = CodeGen.CodeGen
 else
     BNFGrammar = self.BNFGrammar
+    CodeGen = self.CodeGen
     LexParser = self.LexParser
     MixMap = self.MixMap
     SyntaxParser = self.SyntaxParser
@@ -769,7 +772,7 @@ lex_syntax =
 
 grammar = """
 Program -> S+
-S -> SGO StmtEnd | StmtEnd
+S -> SGO StmtEnd | StmtEnd | Function
 SGO -> Obj | StmtEnd | Assignment
 Assignment -> Var* Receiver Assign Giver
 Receiver -> Obj
@@ -780,22 +783,9 @@ Args -> Id (Comma Id)*
 """
 
 script = '''
-  var scope1 = function(){
-        var foo = function(){};
-        var bar = {};
-        bar.ccc = {};
-
-        foo.prototype.another = function(arg3, arg4){
-            var bar = {};
-            bar.abc = {};
-
-            bar;
-            foo;
-        };
-
-        bar;
-
-    };
+    function ABC(x, y){
+        var a = x;
+    }
 '''
 
 
@@ -815,4 +805,15 @@ flow = new Flow args
 flow.append [LexParser.flow, SyntaxParser.flow]
 flow.finish()
 
-log flow.result 'ast'
+ast = flow.result 'ast'
+
+
+python_grammer = '''
+Function -> "def " Id "(" Args "):\\n"
+Assignment -> Receiver " = " Giver "\\n"
+:Args -> Id ", " Id
+:Receiver -> Id
+:Giver -> Id
+'''
+
+log CodeGen(python_grammer, ast)
