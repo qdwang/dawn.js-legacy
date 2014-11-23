@@ -7,21 +7,23 @@ else
     Zipper = self.Zipper
 
 
-CodeGen = (grammer, ast) ->
+CodeGen = (grammer, ast, indent_lex) ->
     grammer_map = GrammerParser grammer
-    GenWalker(grammer_map, ast.leaves)
+    GenWalker(grammer_map, ast.leaves, '', indent_lex)
 
-GenWalker = (grammer, ast_leaves) ->
+GenWalker = (grammer, ast_leaves, indent, indent_lex) ->
     ret = ''
     if not ast_leaves
         return ret
 
     for node in ast_leaves
         if node['lex'] of grammer
-            ret += GenCodeFromLeaves(grammer[node['lex']], node['leaves'], grammer)
+            ret += indent + GenCodeFromLeaves(grammer[node['lex']], node['leaves'], grammer) + '\n'
+            if node['lex'] in indent_lex
+                indent += '    '
 
         if node['leaves']
-            ret += GenWalker(grammer, node['leaves'])
+            ret += GenWalker(grammer, node['leaves'], indent, indent_lex)
 
     ret
 
@@ -42,7 +44,7 @@ GenCodeFromLeaves = (gen_order, ast_leaves, grammer) ->
                     _selected_index = {}
                     for inner_gen_item in expand_grammer
                         if inner_gen_item.charAt(0) == '"'
-                            ret += inner_gen_item
+                            ret += inner_gen_item.substring(1, inner_gen_item.length - 1)
                         else
                             if inner_gen_item not of _selected_index
                                 _selected_index[inner_gen_item] = 0
@@ -57,7 +59,7 @@ GenCodeFromLeaves = (gen_order, ast_leaves, grammer) ->
 
     for gen_item in gen_order
         if gen_item.charAt(0) == '"'
-            ret += gen_item
+            ret += gen_item.substring(1, gen_item.length - 1)
         else
             ret += stratchValues(gen_item, ast_leaves)
 
@@ -84,6 +86,9 @@ GrammerParser = (grammer) ->
                 else
                     in_string = false
                     gen_order[0] = '"' + gen_order[0]
+            else if raw_order[l] == '*'
+                if in_string
+                    gen_order[0] = raw_order[l] + gen_order[0]
             else
                 if in_string
                     gen_order[0] = raw_order[l] + gen_order[0]

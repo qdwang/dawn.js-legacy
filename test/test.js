@@ -831,7 +831,7 @@
 
   grammar = "Program -> S+\nS -> SGO StmtEnd | StmtEnd | Function\nSGO -> Obj | StmtEnd | Assignment\nAssignment -> Var* Receiver Assign Giver\nReceiver -> Obj\nGiver -> Obj | Function\nFunction -> Func Id* Pl Args* Pr Bl S* Br\nObj -> Id (Dot Id)* | Bl Br\nArgs -> Id (Comma Id)*";
 
-  script = 'function ABC(x, y){\n    var a = x;\n}';
+  script = 'function ABC(x, y){\n    var a = x;\n    function CDE(o, p){\n        var q = o;\n        var w = p;\n    }\n    var b = y;\n}';
 
   args = {
     script: script,
@@ -852,9 +852,11 @@
 
   ast = flow.result('ast');
 
-  python_grammer = 'Function -> "def " Id "(" Args "):\\n"\nAssignment -> Receiver " = " Giver "\\n"\n:Args -> Id ", " Id\n:Receiver -> Id\n:Giver -> Id';
+  python_grammer = 'Function -> "def " Id "(" Args "):"\nAssignment -> Receiver " = " Giver\n:Args -> Id ", " Id\n:Receiver -> Id\n:Giver -> Id';
 
-  log(CodeGen(python_grammer, ast));
+  log(script);
+
+  log(CodeGen(python_grammer, ast, ['Function']));
 
 }).call(this);
 
