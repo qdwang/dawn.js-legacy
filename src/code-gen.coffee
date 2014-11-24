@@ -9,7 +9,6 @@ else
 
 CodeGen = (grammar, ast, indent_lex) ->
     grammar_map = grammarParser grammar
-    ulti.log grammar_map
     GenWalker(grammar_map, ast.leaves, '', indent_lex)
 
 GenWalker = (grammar, ast_leaves, indent, indent_lex) ->
@@ -44,7 +43,35 @@ GenCodeFromLeaves = (gen_order, ast_leaves, grammar) ->
                     ret = ''
                     _selected_index = {}
                     for inner_gen_item in expand_grammar
-                        if inner_gen_item.charAt(0) == '"' and inner_gen_item.charAt(inner_gen_item.length - 1) == '"'
+                        if not inner_gen_item
+                            continue
+
+                        if inner_gen_item instanceof Array
+                            none_or_more_item_find = true
+                            while none_or_more_item_find
+                                none_or_more_set = ''
+                                for none_or_more_item in inner_gen_item
+                                    if none_or_more_item.charAt(0) == '"' and none_or_more_item.charAt(none_or_more_item.length - 1) == '"'
+                                        none_or_more_set += none_or_more_item.substring(1, none_or_more_item.length - 1)
+                                    else
+                                        if none_or_more_item not of _selected_index
+                                            _selected_index[none_or_more_item] = 0
+                                        else
+                                            _selected_index[none_or_more_item] += 1
+
+                                        selected = Zipper.select leave, none_or_more_item
+                                        if selected[_selected_index[none_or_more_item]]
+                                            none_or_more_set += selected[_selected_index[none_or_more_item]].value
+                                        else
+                                            none_or_more_item_find = false
+                                            break
+
+                                if not none_or_more_item_find
+                                    break
+                                else
+                                    ret += none_or_more_set
+
+                        else if inner_gen_item.charAt(0) == '"' and inner_gen_item.charAt(inner_gen_item.length - 1) == '"'
                             ret += inner_gen_item.substring(1, inner_gen_item.length - 1)
                         else
                             if inner_gen_item not of _selected_index

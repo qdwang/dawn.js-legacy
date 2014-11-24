@@ -785,7 +785,7 @@ Args -> Id (Comma Id)*
 script = '''
     function ABC(x, y){
         var a = x;
-        function CDE(o, p){
+        function CDE(o, p, z, t){
             var q = o;
             var w = p;
         }
@@ -820,4 +820,4 @@ Assignment -> Receiver " = " Giver
 :Giver -> Id
 '''
 
-log CodeGen(python_grammar, ast, ['Function'])
+log CodeGen(python_grammar, ast, ['Function']) == "def ABC(x, y):\n    a = x\n    def CDE(o, p, z, t):\n        q = o\n        w = p\n    b = y\n", 'CodeGen 1'

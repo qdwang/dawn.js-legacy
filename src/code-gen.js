@@ -15,7 +15,6 @@
   CodeGen = function(grammar, ast, indent_lex) {
     var grammar_map;
     grammar_map = grammarParser(grammar);
-    ulti.log(grammar_map);
     return GenWalker(grammar_map, ast.leaves, '', indent_lex);
   };
 
@@ -47,7 +46,7 @@
       return ret;
     }
     stratchValues = function(gen_item, leaves) {
-      var expand_grammar, inner_gen_item, leave, selected, _i, _j, _len, _len1, _selected_index;
+      var expand_grammar, inner_gen_item, leave, none_or_more_item, none_or_more_item_find, none_or_more_set, selected, _i, _j, _k, _len, _len1, _len2, _selected_index;
       expand_grammar = grammar[':' + gen_item];
       for (_i = 0, _len = leaves.length; _i < _len; _i++) {
         leave = leaves[_i];
@@ -60,7 +59,39 @@
             _selected_index = {};
             for (_j = 0, _len1 = expand_grammar.length; _j < _len1; _j++) {
               inner_gen_item = expand_grammar[_j];
-              if (inner_gen_item.charAt(0) === '"' && inner_gen_item.charAt(inner_gen_item.length - 1) === '"') {
+              if (!inner_gen_item) {
+                continue;
+              }
+              if (inner_gen_item instanceof Array) {
+                none_or_more_item_find = true;
+                while (none_or_more_item_find) {
+                  none_or_more_set = '';
+                  for (_k = 0, _len2 = inner_gen_item.length; _k < _len2; _k++) {
+                    none_or_more_item = inner_gen_item[_k];
+                    if (none_or_more_item.charAt(0) === '"' && none_or_more_item.charAt(none_or_more_item.length - 1) === '"') {
+                      none_or_more_set += none_or_more_item.substring(1, none_or_more_item.length - 1);
+                    } else {
+                      if (!(none_or_more_item in _selected_index)) {
+                        _selected_index[none_or_more_item] = 0;
+                      } else {
+                        _selected_index[none_or_more_item] += 1;
+                      }
+                      selected = Zipper.select(leave, none_or_more_item);
+                      if (selected[_selected_index[none_or_more_item]]) {
+                        none_or_more_set += selected[_selected_index[none_or_more_item]].value;
+                      } else {
+                        none_or_more_item_find = false;
+                        break;
+                      }
+                    }
+                  }
+                  if (!none_or_more_item_find) {
+                    break;
+                  } else {
+                    ret += none_or_more_set;
+                  }
+                }
+              } else if (inner_gen_item.charAt(0) === '"' && inner_gen_item.charAt(inner_gen_item.length - 1) === '"') {
                 ret += inner_gen_item.substring(1, inner_gen_item.length - 1);
               } else {
                 if (!(inner_gen_item in _selected_index)) {
