@@ -812,13 +812,12 @@ flow.finish()
 
 ast = flow.result 'ast'
 
-python_grammer = '''
+python_grammar = '''
 Function -> "def " Id "(" Args "):"
 Assignment -> Receiver " = " Giver
-:Args -> Id ", " Id
+:Args -> Id (", " Id)*
 :Receiver -> Id
 :Giver -> Id
 '''
 
-log script
-log CodeGen(python_grammer, ast, ['Function'])
+log CodeGen(python_grammar, ast, ['Function'])
