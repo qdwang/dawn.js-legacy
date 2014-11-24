@@ -83,10 +83,13 @@ GenCodeFromLeaves = (gen_order, ast_leaves, grammar) ->
                             ret += selected[_selected_index[inner_gen_item]].value
 
                     return ret
-        gen_item
+        ''
 
     for gen_item in gen_order
-        if gen_item.charAt(0) == '"'
+        if gen_item instanceof Array
+            for gen_each_item in gen_item
+                ret += stratchValues(gen_each_item, ast_leaves)
+        else if gen_item.charAt(0) == '"'
             ret += gen_item.substring(1, gen_item.length - 1)
         else
             ret += stratchValues(gen_item, ast_leaves)

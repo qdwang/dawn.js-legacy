@@ -831,7 +831,7 @@
 
   grammar = "Program -> S+\nS -> SGO StmtEnd | StmtEnd | Function\nSGO -> Obj | StmtEnd | Assignment\nAssignment -> Var* Receiver Assign Giver\nReceiver -> Obj\nGiver -> Obj | Function\nFunction -> Func Id* Pl Args* Pr Bl S* Br\nObj -> Id (Dot Id)* | Bl Br\nArgs -> Id (Comma Id)*";
 
-  script = 'function ABC(x, y){\n    var a = x;\n    function CDE(o, p, z, t){\n        var q = o;\n        var w = p;\n    }\n    var b = y;\n}';
+  script = 'function ABC(){\n    var a = x;\n    function CDE(o, p, z, t){\n        var q = o;\n        var w = p;\n    }\n    var b = y;\n}';
 
   args = {
     script: script,
@@ -852,9 +852,9 @@
 
   ast = flow.result('ast');
 
-  python_grammar = 'Function -> "def " Id "(" Args "):"\nAssignment -> Receiver " = " Giver\n:Args -> Id (", " Id)*\n:Receiver -> Id\n:Giver -> Id';
+  python_grammar = 'Function -> "def " Id "(" Args* "):"\nAssignment -> Receiver " = " Giver\n:Args -> Id (", " Id)*\n:Receiver -> Id\n:Giver -> Id';
 
-  log(CodeGen(python_grammar, ast, ['Function']) === "def ABC(x, y):\n    a = x\n    def CDE(o, p, z, t):\n        q = o\n        w = p\n    b = y\n", 'CodeGen 1');
+  log(CodeGen(python_grammar, ast, ['Function']) === "def ABC():\n    a = x\n    def CDE(o, p, z, t):\n        q = o\n        w = p\n    b = y\n", 'CodeGen 1');
 
 }).call(this);
 

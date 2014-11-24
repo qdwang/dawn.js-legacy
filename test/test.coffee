@@ -783,7 +783,7 @@ Args -> Id (Comma Id)*
 """
 
 script = '''
-    function ABC(x, y){
+    function ABC(){
         var a = x;
         function CDE(o, p, z, t){
             var q = o;
@@ -813,11 +813,11 @@ flow.finish()
 ast = flow.result 'ast'
 
 python_grammar = '''
-Function -> "def " Id "(" Args "):"
+Function -> "def " Id "(" Args* "):"
 Assignment -> Receiver " = " Giver
 :Args -> Id (", " Id)*
 :Receiver -> Id
 :Giver -> Id
 '''
 
-log CodeGen(python_grammar, ast, ['Function']) == "def ABC(x, y):\n    a = x\n    def CDE(o, p, z, t):\n        q = o\n        w = p\n    b = y\n", 'CodeGen 1'
+log CodeGen(python_grammar, ast, ['Function']) == "def ABC():\n    a = x\n    def CDE(o, p, z, t):\n        q = o\n        w = p\n    b = y\n", 'CodeGen 1'

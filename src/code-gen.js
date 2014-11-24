@@ -40,7 +40,7 @@
   };
 
   GenCodeFromLeaves = function(gen_order, ast_leaves, grammar) {
-    var gen_item, ret, stratchValues, _i, _len;
+    var gen_each_item, gen_item, ret, stratchValues, _i, _j, _len, _len1;
     ret = '';
     if (!ast_leaves) {
       return ret;
@@ -107,11 +107,16 @@
           }
         }
       }
-      return gen_item;
+      return '';
     };
     for (_i = 0, _len = gen_order.length; _i < _len; _i++) {
       gen_item = gen_order[_i];
-      if (gen_item.charAt(0) === '"') {
+      if (gen_item instanceof Array) {
+        for (_j = 0, _len1 = gen_item.length; _j < _len1; _j++) {
+          gen_each_item = gen_item[_j];
+          ret += stratchValues(gen_each_item, ast_leaves);
+        }
+      } else if (gen_item.charAt(0) === '"') {
         ret += gen_item.substring(1, gen_item.length - 1);
       } else {
         ret += stratchValues(gen_item, ast_leaves);
