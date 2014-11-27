@@ -19,10 +19,15 @@ LexParser.flow = (args) ->
     script = args.script
     lex_syntax = args.lex_syntax
     cursor_pos = args.cursor_pos
+    make_dedent = args.make_dedent
 
     lp = new LexParser script, lex_syntax
     lp.tokenize cursor_pos
+    if make_dedent
+        lp.makeDedent make_dedent
+
     lp.lex_list.push 'ProgramEnd'
+
 
     args.lex_list = lp.lex_list
     args.cursor_lex = lp.cursor_lex
@@ -73,6 +78,28 @@ LexParser::tokenize = (cursor_pos) ->
     for lex of lex_obj
         @lex_list.push lex_obj[lex]
 
+    @
+
+LexParser::makeDedent = (base_lex = 'Indent', insert_lex = 'Dedent') ->
+    new_lex_list = []
+
+    last_indent = 0
+    mixed_indent = 0
+    for lex in @lex_list
+        if lex[0] != base_lex
+            if mixed_indent != 0
+                if mixed_indent < last_indent
+                   new_lex_list.push [insert_lex, '    ']
+                new_lex_list.push [base_lex, '    ']
+                last_indent = mixed_indent
+                mixed_indent = 0
+
+            new_lex_list.push lex
+        else
+            mixed_indent += 1
+
+    new_lex_list.push [insert_lex, '    ']
+    @.lex_list = new_lex_list
     @
 
 LexParser.rebuild = (lex_list, mix_map) ->

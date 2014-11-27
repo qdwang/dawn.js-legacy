@@ -1,4 +1,5 @@
 .git*
+.map
 doc/
 .DS_Store
 .iml

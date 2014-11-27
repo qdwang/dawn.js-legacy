@@ -18,7 +18,8 @@ GenWalker = (grammar, ast_leaves, indent, indent_lex) ->
 
     for node in ast_leaves
         if node['lex'] of grammar
-            ret += indent + GenCodeFromLeaves(grammar[node['lex']], node['leaves'], grammar) + '\n'
+            ret += (if node['lex'] == 'Dedent' then indent.slice(0, -4) else indent) +
+              GenCodeFromLeaves(grammar[node['lex']], node['leaves'], grammar) + '\n'
             if node['lex'] in indent_lex
                 indent += '    '
 
@@ -29,8 +30,8 @@ GenWalker = (grammar, ast_leaves, indent, indent_lex) ->
 
 GenCodeFromLeaves = (gen_order, ast_leaves, grammar) ->
     ret = ''
-    if not ast_leaves
-        return ret
+#    if not ast_leaves
+#        return ret
 
     stratchValues = (gen_item, leaves) ->
         expand_grammar = grammar[':' + gen_item]

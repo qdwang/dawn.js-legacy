@@ -783,7 +783,7 @@ Args -> Id (Comma Id)*
 """
 
 script = '''
-    function ABC(){
+    function ABC(x, y){
         var a = x;
         function CDE(o, p, z, t){
             var q = o;
@@ -820,4 +820,74 @@ Assignment -> Receiver " = " Giver
 :Giver -> Id
 '''
 
-log CodeGen(python_grammar, ast, ['Function']) == "def ABC():\n    a = x\n    def CDE(o, p, z, t):\n        q = o\n        w = p\n    b = y\n", 'CodeGen 1'
+log CodeGen(python_grammar, ast, ['Function']) == "def ABC(x, y):\n    a = x\n    def CDE(o, p, z, t):\n        q = o\n        w = p\n    b = y\n", 'CodeGen 1'
+
+
+
+
+lex_syntax =
+    'String': /'.*?[^\\]'|".*?[^\\]"/
+    'Dot': /\./
+    'Func': /def/
+    'Indent': /\ \ \ \ /
+    'Colon': /\:/
+    'StmtEnd': /\n/
+    'Assign': /\=/
+    'Pl': /\(/
+    'Pr': /\)/
+    'Comma': /\,/
+    'Id': /[a-zA-Z_$][\w_$]*/
+
+
+script = '''
+def ABC(x, y):
+    a = x
+    def CDE(o, p, z, t):
+        q = o
+        w = p
+
+    b = y
+
+'''
+
+grammar = """
+Program -> S+
+S -> Indent* SGO StmtEnd | Indent* StmtEnd | Indent* Function
+SGO -> Obj | StmtEnd | Assignment
+Assignment -> Receiver Assign Giver
+Receiver -> Obj
+Giver -> Obj | Function
+Function -> Func Id Pl Args* Pr Colon S+ Dedent
+Obj -> Id (Dot Id)* | Bl Br
+Args -> Id (Comma Id)*
+"""
+
+args =
+    script: script
+    lex_syntax: lex_syntax
+    make_dedent: 'Indent'
+
+    grammar: grammar
+    start_stmt: ['Program']
+    sync_lex: ['StmtEnd', 'ParseFail', 'S']
+    mix_map: new MixMap
+    ast_cutter: []
+
+    scope_rules: ['Function']
+
+flow = new Flow args
+flow.append [LexParser.flow, SyntaxParser.flow]
+flow.finish()
+
+ast = flow.result 'ast'
+
+js_grammar = '''
+Function -> "function " Id "(" Args* "){"
+Assignment -> "var " Receiver " = " Giver ";"
+Dedent -> "}"
+:Args -> Id (", " Id)*
+:Receiver -> Id
+:Giver -> Id
+'''
+
+log CodeGen(js_grammar, ast, ['Function']) == "function ABC(x, y){\n    var a = x;\n    function CDE(o, p, z, t){\n        var q = o;\n        var w = p;\n    }\n    var b = y;\n}\n", "CodeGen 2"
