@@ -93,6 +93,15 @@ lex_parser.tokenize(
 )
 ```
 
+#### lex_parser.make_dedent
+generate dedent for language like Python
+```
+lex_parser.make_dedent(
+    base_lex: lex to be the indent, -> string
+    insert_lex: lex to be the dedent -> string
+)
+```
+
 #### LexParser.rebuild (static method)
 help to reconstruct mix map
 ```

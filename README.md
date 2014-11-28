@@ -1,11 +1,11 @@
 # dawn.js
 
-**bring intelligence to coding**
+**General Transpiler implemented in JavaScript**
 
-dawn.js is a powerful toolkit to help with coding
+dawn.js is a source to source compiler implemented in JavaScript(CoffeeScript)
 
 ## Website
-[dawnjs.com](http://dawnjs.com)
+[dawnjs.org](http://dawnjs.org)
 
 ## NPM
 ```
@@ -21,17 +21,16 @@ npm install dawn.js
 
 ## Things available to do
 
-* Helping to understand the codes
-* Real autocompletion specific to scopes and objects
+* Compile from one language to another language according to the grammar definition
+* Implement real autocompletion specific to scopes and objects in Web
 * Autocompletion between different languages (like working Javascript with JAVA in Android)
 * Accurate refactor
 * Handle files in complex structure easily
 * Implement amazing editing features form heavy weight editors (VisualStudio, IntellijIDEA...) in light weight editors (Web, SublimeText, Atom...)
-* So on...
 
 ## Demo
 
-* Checkout [object reference demo](http://dawnjs.com/demo)
+* Checkout [object reference demo](http://dawnjs.org/demo)
 * More are coming soon...
 
 ## Tutorial
