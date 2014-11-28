@@ -86,19 +86,23 @@ LexParser::makeDedent = (base_lex = 'Indent', insert_lex = 'Dedent') ->
     last_indent = 0
     mixed_indent = 0
     for lex in @lex_list
-        if lex[0] != base_lex
-            if mixed_indent != 0
+        if lex[1] == '\n'
+            mixed_indent = 0
+            new_lex_list.push lex
+        else if lex[0] == base_lex
+            mixed_indent += 1
+        else
+            if new_lex_list.length and new_lex_list[new_lex_list.length - 1][1] == '\n'
                 if mixed_indent < last_indent
-                   new_lex_list.push [insert_lex, '    ']
-                new_lex_list.push [base_lex, '    ']
+                    for i in [0..last_indent - mixed_indent - 1]
+                        new_lex_list.push [insert_lex, '    ']
+                if mixed_indent > 0
+                    new_lex_list.push [base_lex, '    ']
+
                 last_indent = mixed_indent
-                mixed_indent = 0
 
             new_lex_list.push lex
-        else
-            mixed_indent += 1
 
-    new_lex_list.push [insert_lex, '    ']
     @.lex_list = new_lex_list
     @
 

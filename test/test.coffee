@@ -830,8 +830,8 @@ lex_syntax =
     'Dot': /\./
     'Func': /def/
     'Indent': /\ \ \ \ /
-    'Colon': /\:/
     'StmtEnd': /\n/
+    'Colon': /\:/
     'Assign': /\=/
     'Pl': /\(/
     'Pr': /\)/
@@ -847,6 +847,8 @@ def ABC(x, y):
         w = p
 
     b = y
+
+i = i
 
 '''
 
@@ -890,4 +892,4 @@ Dedent -> "}"
 :Giver -> Id
 '''
 
-log CodeGen(js_grammar, ast, ['Function']) == "function ABC(x, y){\n    var a = x;\n    function CDE(o, p, z, t){\n        var q = o;\n        var w = p;\n    }\n    var b = y;\n}\n", "CodeGen 2"
+log CodeGen(js_grammar, ast, ['Function']) == "function ABC(x, y){\n    var a = x;\n    function CDE(o, p, z, t){\n        var q = o;\n        var w = p;\n    }\n    var b = y;\n}\nvar i = i;\n", "CodeGen 2"
