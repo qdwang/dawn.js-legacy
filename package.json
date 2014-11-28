@@ -1,7 +1,7 @@
 {
   "name": "dawn.js",
-  "version": "0.0.3",
-  "description": "dawn.js, bring intelligence to coding",
+  "version": "0.1.0",
+  "description": "General Transpiler implemented in JavaScript",
   "scripts": {
     "test": "test/test.js"
   },
@@ -11,6 +11,9 @@
   },
   "keywords": [
     "dawn.js",
+    "AST",
+    "compiler",
+    "transpiler",
     "lex parser",
     "syntax parser",
     "symbol talbe",

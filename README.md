@@ -4,9 +4,6 @@
 
 dawn.js is a source to source compiler implemented in JavaScript(CoffeeScript)
 
-## Website
-[dawnjs.org](http://dawnjs.org)
-
 ## NPM
 ```
 npm install dawn.js
