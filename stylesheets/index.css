@@ -1,0 +1,101 @@
+
+#editor,
+#autocomplete,
+#transpiler-js2py,
+#transpiler-js2py-result,
+#transpiler-py2js,
+#transpiler-py2js-result
+{
+    font-family: Menlo, Consolas, monospace;
+    font-size: 12px;
+    height: 400px;
+    border: 10px solid #f5eadb;
+}
+
+#tip {
+    -ms-transition: all 0.33s;
+    transition: all 0.33s;
+    z-index: 10;
+    padding: 5px 15px;
+    position: absolute;
+    font-family: Menlo, Consolas, monospace;
+    font-size: 12px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #ccc;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    border-radius: 5px;
+}
+
+.ace-dawnjs {
+    font-family: Menlo, Consolas, monospace;
+    color: #b56a7b;
+    background: #fdfdfc;
+}
+.ace-dawnjs .ace_gutter {
+    background: #f7f7f6;
+    color: #d89791;
+}
+.ace-dawnjs .ace_selection {
+    background: #f9f2e9;
+}
+.ace-dawnjs .ace_cursor {
+    color: #bd7b8a;
+    border-left: 2px solid #ca898d;
+}
+.ace-dawnjs .ace_comment,
+.ace-dawnjs .block-comment,
+.ace-dawnjs .prolog,
+.ace-dawnjs .doctype,
+.ace-dawnjs .cdata {
+    color: #a4a597;
+}
+.ace-dawnjs .property,
+.ace-dawnjs .tag,
+.ace-dawnjs .boolean,
+.ace-dawnjs .number,
+.ace-dawnjs .function-name,
+.ace-dawnjs .constant,
+.ace-dawnjs .symbol {
+    color: #419c5e;
+}
+.ace-dawnjs .selector,
+.ace-dawnjs .attr-name,
+.ace-dawnjs .ace_storage,
+.ace-dawnjs .ace_type,
+.ace-dawnjs .builtin {
+    color: #e06459;
+}
+.ace-dawnjs .ace_variable,
+.ace-dawnjs .entity,
+.ace-dawnjs .url,
+.ace-dawnjs .ace_identifier {
+    color: #b15e3b;
+}
+.ace-dawnjs .ace_support.ace_function,
+.ace-dawnjs .ace_markup.ace_list,
+.ace-dawnjs .ace_list {
+    color: #a98b3e;
+}
+.ace-dawnjs .ace_string.ace_regexp,
+.ace-dawnjs .ace_string {
+    color: #3e912c;
+}
+.ace-dawnjs .ace_constant,
+.ace-dawnjs .ace_character,
+.ace-dawnjs .ace_escape,
+.ace-dawnjs .ace_other {
+    color: #c98e41;
+}
+.ace-dawnjs .ace_invalid.ace_illegal {
+    color: #f56a5c;
+    text-decoration: underline;
+}
+.ace-dawnjs .ace_invalid.ace_deprecated {
+    color: #ccc;
+}
+
+
+.block {background: #fcfcfc; padding: 10px}
+.block p {margin-bottom: 5px}

@@ -7,11 +7,27 @@
     <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+      <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+      <link rel="stylesheet" type="text/css" href="stylesheets/index.css" media="screen">
 
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+
+
+      <script src="javascripts/vendors/ace/ace.js"></script>
+
+      <script src="javascripts/dawnjs/src/ulti.js"></script>
+      <script src="javascripts/dawnjs/src/flow.js"></script>
+      <script src="javascripts/dawnjs/src/BNF-parser.js"></script>
+      <script src="javascripts/dawnjs/src/lex-parser.js"></script>
+      <script src="javascripts/dawnjs/src/LR1-parser.js"></script>
+      <script src="javascripts/dawnjs/src/Zipper.js"></script>
+      <script src="javascripts/dawnjs/src/symbol-table.js"></script>
+      <script src="javascripts/dawnjs/src/IR.js"></script>
+      <script src="javascripts/dawnjs/src/code-gen.js"></script>
+
+
 
     <title>Dawn.js by qdwang</title>
   </head>
@@ -65,12 +81,354 @@
 
 <h2>
 <a id="demo" class="anchor" href="#demo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Demo</h2>
+    <h3> Language Transcompile</h3>
+    <div class="block">
+        <div id="transpiler-js2py">// transcompile from javascript to python
 
-<ul>
-<li>Checkout <a href="http://dawnjs.org/demo">object reference demo</a>
-</li>
-<li>More are coming soon...</li>
-</ul>
+script = '\
+            function ABC(x, y){\n\
+                var a = x;\n\
+                function CDE(o, p, z, t){\n\
+                    var q = o;\n\
+                    var w = p;\n\
+                }\n\
+                var b = y;\n\
+            }';
+
+lex_syntax = {
+    'String': /'.*?[^\\]'|".*?[^\\]"/,
+    'Dot': /\./,
+    'Func': /function/,
+    'StmtEnd': /;|\n/,
+    'Assign': /\=/,
+    'Pl': /\(/,
+    'Pr': /\)/,
+    'Bl': /\{/,
+    'Br': /\}/,
+    'Comma': /\,/,
+    'Var': /var/,
+    'Id': /[a-zA-Z_$][\w_$]*/
+};
+
+grammar = "\
+            Program -> S+\n\
+            S -> SGO StmtEnd | StmtEnd | Function\n\
+            SGO -> Obj | StmtEnd | Assignment\n\
+            Assignment -> Var* Receiver Assign Giver\n\
+            Receiver -> Obj\n\
+            Giver -> Obj | Function\n\
+            Function -> Func Id* Pl Args* Pr Bl S* Br\n\
+            Obj -> Id (Dot Id)* | Bl Br\n\
+            Args -> Id (Comma Id)*";
+
+
+args = {
+    script: script,
+    lex_syntax: lex_syntax,
+    grammar: grammar,
+    start_stmt: ['Program'],
+    sync_lex: ['StmtEnd', 'ParseFail', 'S'],
+    mix_map: new MixMap,
+    ast_cutter: [],
+    scope_rules: ['Function']
+};
+
+flow = new Flow(args);
+
+flow.append([LexParser.flow, SyntaxParser.flow]);
+
+flow.finish();
+
+ast = flow.result('ast');
+
+python_grammar = '\
+            Function -> "def " Id "(" Args* "):"\n\
+            Assignment -> Receiver " = " Giver\n\
+            :Args -> Id (", " Id)*\n\
+            :Receiver -> Id\n\
+            :Giver -> Id';
+
+window.compile_js2py = function(){
+    return CodeGen(python_grammar, ast, ['Function'])
+};
+        </div>
+    <div id="transpiler-js2py-result"># Try blur from editor above.
+    </div>
+
+    </div>
+    <div class="block">
+
+        <div id="transpiler-py2js">// transcompile from python to javascript
+
+script = '\
+            def ABC(x, y):\n\
+                a = x\n\
+                def CDE(o, p, z, t):\n\
+                    q = o\n\
+                    w = p\n\n\
+                b = y\n\n\
+            i = i\n';
+
+lex_syntax = {
+    'String': /'.*?[^\\]'|".*?[^\\]"/,
+    'Dot': /\./,
+    'Func': /def/,
+    'Indent': /\ \ \ \ /,
+    'StmtEnd': /\n/,
+    'Colon': /\:/,
+    'Assign': /\=/,
+    'Pl': /\(/,
+    'Pr': /\)/,
+    'Comma': /\,/,
+    'Id': /[a-zA-Z_$][\w_$]*/
+};
+
+
+grammar = "\
+            Program -> S+\n\
+            S -> Indent* SGO StmtEnd | Indent* StmtEnd | Indent* Function\n\
+            SGO -> Obj | StmtEnd | Assignment\n\
+            Assignment -> Receiver Assign Giver\n\
+            Receiver -> Obj\n\
+            Giver -> Obj | Function\n\
+            Function -> Func Id Pl Args* Pr Colon S+ Dedent\n\
+            Obj -> Id (Dot Id)* | Bl Br\n\
+            Args -> Id (Comma Id)*";
+
+args = {
+    script: script,
+    lex_syntax: lex_syntax,
+    make_dedent: 'Indent',
+    grammar: grammar,
+    start_stmt: ['Program'],
+    sync_lex: ['StmtEnd', 'ParseFail', 'S'],
+    mix_map: new MixMap,
+    ast_cutter: [],
+    scope_rules: ['Function']
+};
+
+flow = new Flow(args);
+
+flow.append([LexParser.flow, SyntaxParser.flow]);
+
+flow.finish();
+
+ast = flow.result('ast');
+
+js_grammar = '\
+            Function -> "function " Id "(" Args* "){"\n\
+            Assignment -> "var " Receiver " = " Giver ";"\n\
+            Dedent -> "}"\n\
+            :Args -> Id (", " Id)*\n\
+            :Receiver -> Id\n\
+            :Giver -> Id';
+
+window.compile_py2js = function(){
+    return CodeGen(js_grammar, ast, ['Function'])
+};
+        </div>
+        <div id="transpiler-py2js-result">// Try blur from editor above.
+        </div>
+    </div>
+    <h3> Object Reference</h3>
+    <div class="block">
+
+    <p>Define your whole parsing work flow here.</p>
+    <div id="autocomplete">
+(function() {
+    var getObjectName, grammar, lex_syntax, markers, parseFlow;
+
+    /* On your own service, you can run your script under Web Worker.
+       It's much faster and will not block the browser UI thread.
+
+    importScripts './../../src/ulti.js'
+    importScripts './../../src/BNF-parser.js'
+    importScripts './../../src/IR.js'
+    importScripts './../../src/Zipper.js'
+    importScripts './../../src/flow.js'
+    importScripts './../../src/lex-parser.js'
+    importScripts './../../src/LR1-parser.js'
+    importScripts './../../src/symbol-table.js'
+    */
+
+    // Define the lexer syntax to tokenize your code
+    lex_syntax = {
+        'String': /'.*?[^\\]'|".*?[^\\]"/,
+        'Dot': /\./,
+        'Func': /function/,
+        'StmtEnd': /;|\n/,
+        'Assign': /\=/,
+        'Pl': /\(/,
+        'Pr': /\)/,
+        'Bl': /\{/,
+        'Br': /\}/,
+        'Comma': /\,/,
+        'Var': /var/,
+        'Id': /[a-zA-Z_$][\w_$]*/
+    };
+
+    // Define the grammar to generate Syntax Tree
+    grammar = "Program -> S+ \n\
+        S -> SGO StmtEnd | StmtEnd \n\
+        SGO -> Obj | StmtEnd | Assignment \n\
+        Assignment -> Var* Receiver Assign Giver \n\
+        Receiver -> Obj \n\
+        Giver -> Obj | Function \n\
+        Function -> Func Id* Pl Args* Pr Bl S* Br \n\
+        Obj -> Id (Dot Id)* | Bl Br \n\
+        Args -> Id (Comma Id)*";
+
+    // Define how Symbol Table will store data
+    markers = {
+        Receiver: (function(x) {
+            return getObjectName(x);
+        }),
+        Giver: (function(x) {
+            return x;
+        })
+    };
+
+    // a function to get name from the Obj node
+    getObjectName = function(obj_node, top) {
+       var id, ids, name, _i, _len;
+        if (top == null) {
+            top = false;
+        }
+
+        // Zipper.select can handle css like syntax to find child nodes
+        ids = self.Zipper.select(obj_node, 'Id');
+        name = '';
+        for (_i = 0, _len = ids.length; _i < _len; _i++) {
+            id = ids[_i];
+            name += id.value + '.';
+            if (top) {
+                break;
+            }
+        }
+
+        return name.slice(0, -1);
+    };
+
+    window.parseFlow = function(script, cursor_pos) {
+        var args, ast, curr_ast_node, curr_obj_name, curr_obj_node, curr_symbol_table, cursor_lex, flow, i, mm, result, scope_node, _i, _len, _results;
+
+        // Define arguments for our parse flow
+        args = {
+            script: script,
+            lex_syntax: lex_syntax,
+            cursor_pos: cursor_pos,
+            grammar: grammar,
+            start_stmt: ['Program'],
+            sync_lex: ['StmtEnd', 'ParseFail', 'S'],
+            mix_map: new self.MixMap,
+            ast_cutter: [],
+            markers: markers,
+            scope_rules: ['Function']
+        };
+
+        // flow.finish will walk through the flow, and all the result will be stored in flow.args
+        flow = new self.Flow(args);
+        flow.append([self.LexParser.flow, self.SyntaxParser.flow, self.SymbolTable.flow]);
+        flow.finish();
+
+        //
+        //
+        // The code below is mainly about how to build a simple Autocompletion from flow results
+        //
+        //
+        cursor_lex = flow.result('cursor_lex');
+
+        // In this flow, mix map is a structure describing the relation among lex tokens, AST tree and symbol table.
+        mm = flow.result('mix_map');
+
+        ast = flow.result('ast');
+
+        if (!cursor_lex) {
+            console.log('no lex found');
+            return null;
+        }
+
+        // from cursor_lex get related AST node
+        curr_ast_node = mm.get(cursor_lex, 'SyntaxNode');
+
+        // Zipper is a ultility for navigating trees
+        curr_obj_node = self.Zipper.findParent({lex: 'Obj'}, curr_ast_node);
+        scope_node = self.Zipper.findParent({lex: 'Function'}, curr_ast_node);
+
+        if (!scope_node) {
+            scope_node = ast;
+        }
+
+        // from node of current scope get related symbol table
+        curr_symbol_table = mm.get(scope_node, 'SymbolTable');
+
+        if (curr_obj_node) {
+            curr_obj_name = getObjectName(curr_obj_node, true);
+            if (!curr_obj_name.trim()){
+                return false;
+            }
+
+            result = curr_symbol_table.filter((function(record) {
+                if (record.Receiver.indexOf(curr_obj_name) > -1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }), 1);
+
+            ret = []
+            for (_i = 0, _len = result.length; _i < _len; _i++) {
+                i = result[_i];
+                ret.push(i.Receiver);
+                console.log(i.Receiver);
+            }
+            return ret;
+        } else {
+            console.log('no reference found');
+        }
+    };
+
+
+}).call(this);
+
+
+    </div>
+</div>
+
+
+<div class="block" style="position: relative">
+    <div id="tip"></div>
+    <p>Move the cursor with your keyboard to active the whole parsing work flow.</p>
+   <div id="editor">
+some_identifier;
+var foo = function(){};
+foo.prototype.bar = function(arg1, arg2){};
+
+var scope1 = function(){
+   var foo = function(){};
+   var bar = {};
+   bar.ccc = {};
+
+   foo.prototype.another = function(arg3, arg4){
+       var bar = {};
+       bar.abc = {};
+
+       bar;
+       foo;
+   };
+
+   bar;
+
+};
+
+var scope2 = function(){
+   foo;
+};
+
+foo;
+   </div>
+
+</div>
 
 <h2>
 <a id="tutorial" class="anchor" href="#tutorial" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tutorial</h2>
@@ -84,7 +442,7 @@
 
 <ul>
 <li>
-<a href="https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/Flow.md">Flow</a> - the dawn.js plugin system</li>
+<p><a href="https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/Flow.md">Flow</a> - the dawn.js plugin system</p></li>
 <li><p><a href="https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/MixMap.md">MixMap</a> - a reference grid system</p></li>
 <li><p><a href="https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/LexParser.md">LexParser</a> - a parser to tokenize the code script</p></li>
 <li><p><a href="https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/BNFParser.md">BNFParser</a> - generate structure from plain E-BNF definition</p></li>
@@ -98,6 +456,9 @@
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
 
 <p>MIT</p>
+
+
+          <script src="javascripts/demo.js"></script>
         </section>
 
         <aside id="sidebar">
@@ -116,6 +477,7 @@
         </aside>
       </div>
     </div>
+
 
             <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
