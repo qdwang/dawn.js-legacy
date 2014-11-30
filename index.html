@@ -37,7 +37,7 @@
       <div class="inner">
         <h1>Dawn.js</h1>
         <h2>General Transpiler implemented in JavaScript</h2>
-        <a href="https://github.com/qdwang/dawn.js" class="button"><small>View project on</small> GitHub</a>
+        <a href="https://github.com/qdwang/dawn.js" target="_blank" class="button"><small>View project on</small> GitHub</a>
       </div>
     </header>
 
@@ -85,74 +85,79 @@
     <div class="block">
         <div id="transpiler-js2py">// transcompile from javascript to python
 
-script = '\
-            function ABC(x, y){\n\
-                var a = x;\n\
-                function CDE(o, p, z, t){\n\
-                    var q = o;\n\
-                    var w = p;\n\
-                }\n\
-                var b = y;\n\
-            }';
+(function() {
+    script = '\
+        function ABC(x, y){\n\
+            var a = x;\n\
+            function CDE(o, p, z, t){\n\
+                var q = o;\n\
+                var w = p;\n\
+            }\n\
+            var b = y;\n\
+        }';
 
-lex_syntax = {
-    'String': /'.*?[^\\]'|".*?[^\\]"/,
-    'Dot': /\./,
-    'Func': /function/,
-    'StmtEnd': /;|\n/,
-    'Assign': /\=/,
-    'Pl': /\(/,
-    'Pr': /\)/,
-    'Bl': /\{/,
-    'Br': /\}/,
-    'Comma': /\,/,
-    'Var': /var/,
-    'Id': /[a-zA-Z_$][\w_$]*/
-};
+    lex_syntax = {
+        'String': /'.*?[^\\]'|".*?[^\\]"/,
+        'Dot': /\./,
+        'Func': /function/,
+        'StmtEnd': /;|\n/,
+        'Assign': /\=/,
+        'Pl': /\(/,
+        'Pr': /\)/,
+        'Bl': /\{/,
+        'Br': /\}/,
+        'Comma': /\,/,
+        'Var': /var/,
+        'Id': /[a-zA-Z_$][\w_$]*/
+    };
 
-grammar = "\
-            Program -> S+\n\
-            S -> SGO StmtEnd | StmtEnd | Function\n\
-            SGO -> Obj | StmtEnd | Assignment\n\
-            Assignment -> Var* Receiver Assign Giver\n\
-            Receiver -> Obj\n\
-            Giver -> Obj | Function\n\
-            Function -> Func Id* Pl Args* Pr Bl S* Br\n\
-            Obj -> Id (Dot Id)* | Bl Br\n\
-            Args -> Id (Comma Id)*";
+    grammar = "\
+                Program -> S+\n\
+                S -> SGO StmtEnd | StmtEnd | Function\n\
+                SGO -> Obj | StmtEnd | Assignment\n\
+                Assignment -> Var* Receiver Assign Giver\n\
+                Receiver -> Obj\n\
+                Giver -> Obj | Function\n\
+                Function -> Func Id* Pl Args* Pr Bl S* Br\n\
+                Obj -> Id (Dot Id)* | Bl Br\n\
+                Args -> Id (Comma Id)*";
 
 
-args = {
-    script: script,
-    lex_syntax: lex_syntax,
-    grammar: grammar,
-    start_stmt: ['Program'],
-    sync_lex: ['StmtEnd', 'ParseFail', 'S'],
-    mix_map: new MixMap,
-    ast_cutter: [],
-    scope_rules: ['Function']
-};
+    args = {
+        script: script,
+        lex_syntax: lex_syntax,
+        grammar: grammar,
+        start_stmt: ['Program'],
+        sync_lex: ['StmtEnd', 'ParseFail', 'S'],
+        mix_map: new MixMap,
+        ast_cutter: [],
+        scope_rules: ['Function']
+    };
 
-flow = new Flow(args);
+    flow = new Flow(args);
 
-flow.append([LexParser.flow, SyntaxParser.flow]);
+    flow.append([LexParser.flow, SyntaxParser.flow]);
 
-flow.finish();
+    flow.finish();
 
-ast = flow.result('ast');
+    ast = flow.result('ast');
 
-python_grammar = '\
-            Function -> "def " Id "(" Args* "):"\n\
-            Assignment -> Receiver " = " Giver\n\
-            :Args -> Id (", " Id)*\n\
-            :Receiver -> Id\n\
-            :Giver -> Id';
+    python_grammar = '\
+                Function -> "def " Id "(" Args* "):"\n\
+                Assignment -> Receiver " = " Giver\n\
+                :Args -> Id (", " Id)*\n\
+                :Receiver -> Id\n\
+                :Giver -> Id';
 
-window.compile_js2py = function(){
-    return CodeGen(python_grammar, ast, ['Function'])
-};
+    window.compile_js2py = function(){
+        return CodeGen(python_grammar, ast, ['Function'])
+    };
+
+})();
         </div>
-    <div id="transpiler-js2py-result"># Try blur from editor above.
+<div class="button-line"><button id="js2py-compile">Compile</button></div>
+
+    <div id="transpiler-js2py-result">
     </div>
 
     </div>
@@ -160,74 +165,80 @@ window.compile_js2py = function(){
 
         <div id="transpiler-py2js">// transcompile from python to javascript
 
-script = '\
-            def ABC(x, y):\n\
-                a = x\n\
-                def CDE(o, p, z, t):\n\
-                    q = o\n\
-                    w = p\n\n\
-                b = y\n\n\
-            i = i\n';
+(function() {
+    script = '\
+        def ABC(x, y):\n\
+            a = x\n\
+            def CDE(o, p, z, t):\n\
+                q = o\n\
+                w = p\n\n\
+            b = y\n\n\
+        i = i\n';
 
-lex_syntax = {
-    'String': /'.*?[^\\]'|".*?[^\\]"/,
-    'Dot': /\./,
-    'Func': /def/,
-    'Indent': /\ \ \ \ /,
-    'StmtEnd': /\n/,
-    'Colon': /\:/,
-    'Assign': /\=/,
-    'Pl': /\(/,
-    'Pr': /\)/,
-    'Comma': /\,/,
-    'Id': /[a-zA-Z_$][\w_$]*/
-};
+    lex_syntax = {
+        'String': /'.*?[^\\]'|".*?[^\\]"/,
+        'Dot': /\./,
+        'Func': /def/,
+        'Indent': /\ \ \ \ /,
+        'StmtEnd': /\n/,
+        'Colon': /\:/,
+        'Assign': /\=/,
+        'Pl': /\(/,
+        'Pr': /\)/,
+        'Comma': /\,/,
+        'Id': /[a-zA-Z_$][\w_$]*/
+    };
 
 
-grammar = "\
-            Program -> S+\n\
-            S -> Indent* SGO StmtEnd | Indent* StmtEnd | Indent* Function\n\
-            SGO -> Obj | StmtEnd | Assignment\n\
-            Assignment -> Receiver Assign Giver\n\
-            Receiver -> Obj\n\
-            Giver -> Obj | Function\n\
-            Function -> Func Id Pl Args* Pr Colon S+ Dedent\n\
-            Obj -> Id (Dot Id)* | Bl Br\n\
-            Args -> Id (Comma Id)*";
+    grammar = "\
+                Program -> S+\n\
+                S -> Indent* SGO StmtEnd | Indent* StmtEnd | Indent* Function\n\
+                SGO -> Obj | StmtEnd | Assignment\n\
+                Assignment -> Receiver Assign Giver\n\
+                Receiver -> Obj\n\
+                Giver -> Obj | Function\n\
+                Function -> Func Id Pl Args* Pr Colon S+ Dedent\n\
+                Obj -> Id (Dot Id)* | Bl Br\n\
+                Args -> Id (Comma Id)*";
 
-args = {
-    script: script,
-    lex_syntax: lex_syntax,
-    make_dedent: 'Indent',
-    grammar: grammar,
-    start_stmt: ['Program'],
-    sync_lex: ['StmtEnd', 'ParseFail', 'S'],
-    mix_map: new MixMap,
-    ast_cutter: [],
-    scope_rules: ['Function']
-};
+    args = {
+        script: script,
+        lex_syntax: lex_syntax,
+        make_dedent: 'Indent',
+        grammar: grammar,
+        start_stmt: ['Program'],
+        sync_lex: ['StmtEnd', 'ParseFail', 'S'],
+        mix_map: new MixMap,
+        ast_cutter: [],
+        scope_rules: ['Function']
+    };
 
-flow = new Flow(args);
+    flow = new Flow(args);
 
-flow.append([LexParser.flow, SyntaxParser.flow]);
+    flow.append([LexParser.flow, SyntaxParser.flow]);
 
-flow.finish();
+    flow.finish();
 
-ast = flow.result('ast');
+    ast = flow.result('ast');
 
-js_grammar = '\
-            Function -> "function " Id "(" Args* "){"\n\
-            Assignment -> "var " Receiver " = " Giver ";"\n\
-            Dedent -> "}"\n\
-            :Args -> Id (", " Id)*\n\
-            :Receiver -> Id\n\
-            :Giver -> Id';
+    js_grammar = '\
+                Function -> "function " Id "(" Args* "){"\n\
+                Assignment -> "var " Receiver " = " Giver ";"\n\
+                Dedent -> "}"\n\
+                :Args -> Id (", " Id)*\n\
+                :Receiver -> Id\n\
+                :Giver -> Id';
 
-window.compile_py2js = function(){
-    return CodeGen(js_grammar, ast, ['Function'])
-};
+    window.compile_py2js = function(){
+        return CodeGen(js_grammar, ast, ['Function'])
+    };
+
+})();
         </div>
-        <div id="transpiler-py2js-result">// Try blur from editor above.
+        <div class="button-line">
+        <button id="py2js-compile">Compile</button>
+</div>
+        <div id="transpiler-py2js-result">
         </div>
     </div>
     <h3> Object Reference</h3>
@@ -394,6 +405,7 @@ window.compile_py2js = function(){
 
     </div>
 </div>
+            <div class="button-line"><button id="autocomplete-run">Run</button></div>
 
 
 <div class="block" style="position: relative">
@@ -439,19 +451,9 @@ foo;
 
 <h2>
 <a id="api-reference" class="anchor" href="#api-reference" aria-hidden="true"><span class="octicon octicon-link"></span></a>API Reference</h2>
-
-<ul>
-<li>
-<p><a href="https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/Flow.md">Flow</a> - the dawn.js plugin system</p></li>
-<li><p><a href="https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/MixMap.md">MixMap</a> - a reference grid system</p></li>
-<li><p><a href="https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/LexParser.md">LexParser</a> - a parser to tokenize the code script</p></li>
-<li><p><a href="https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/BNFParser.md">BNFParser</a> - generate structure from plain E-BNF definition</p></li>
-<li><p><a href="https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/SyntaxParser.md">SyntaxParser</a> - a parser to generate syntax tree from lex list</p></li>
-<li><p><a href="https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/SymbolTable.md">SymbolTable</a> - a grid system to store specific data for syntax tree</p></li>
-<li><p><a href="https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/Zipper.md">Zipper</a> - a set of utilities to deal with tree structure</p></li>
-<li><p><a href="https://github.com/qdwang/dawn.js/blob/master/doc/API%20Reference/Ulti.md">Ulti</a> - a set of helpers</p></li>
-</ul>
-
+            <ul><li>
+                <a href="https://github.com/qdwang/dawn.js#api-reference" target="_blank">Link</a>
+            </li></ul>
 <h2>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
 
@@ -471,7 +473,7 @@ foo;
             .tar.gz file
           </a>
 
-          <p class="repo-owner"><a href="https://github.com/qdwang/dawn.js"></a> is maintained by <a href="https://github.com/qdwang">qdwang</a>.</p>
+          <p class="repo-owner"><a href="https://github.com/qdwang/dawn.js"></a> is maintained by <a href="https://github.com/qdwang" target="_blank">qdwang</a>.</p>
 
           <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
         </aside>

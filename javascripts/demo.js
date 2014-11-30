@@ -32,16 +32,16 @@
 
   py2js_result_plugin.getSession().setMode('ace/mode/javascript');
 
-  autocomplete_plugin.on('blur', function() {
+  document.getElementById('autocomplete-run').addEventListener('click', function() {
     return eval(autocomplete_plugin.getValue());
   });
 
-  js2py_plugin.on('blur', function() {
+  document.getElementById('js2py-compile').addEventListener('click', function() {
     eval(js2py_plugin.getValue());
     return js2py_result_plugin.setValue(window.compile_js2py());
   });
 
-  py2js_plugin.on('blur', function() {
+  document.getElementById('py2js-compile').addEventListener('click', function() {
     eval(py2js_plugin.getValue());
     return py2js_result_plugin.setValue(window.compile_py2js());
   });

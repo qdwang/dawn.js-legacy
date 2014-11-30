@@ -18,14 +18,14 @@ py2js_result_plugin = ace.edit 'transpiler-py2js-result'
 py2js_result_plugin.setTheme 'ace/theme/dawnjs'
 py2js_result_plugin.getSession().setMode 'ace/mode/javascript'
 
-autocomplete_plugin.on 'blur', ->
+document.getElementById('autocomplete-run').addEventListener 'click', ->
     eval autocomplete_plugin.getValue()
 
-js2py_plugin.on 'blur', ->
+document.getElementById('js2py-compile').addEventListener 'click', ->
     eval js2py_plugin.getValue()
     js2py_result_plugin.setValue(window.compile_js2py())
 
-py2js_plugin.on 'blur', ->
+document.getElementById('py2js-compile').addEventListener 'click', ->
     eval py2js_plugin.getValue()
     py2js_result_plugin.setValue(window.compile_py2js())
 
