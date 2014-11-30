@@ -390,7 +390,7 @@ i = i\n';
             ret = []
             for (_i = 0, _len = result.length; _i < _len; _i++) {
                 i = result[_i];
-                ret.push(i.Receiver);
+                ret.push(i.Receiver); // push obj to hint
                 console.log(i.Receiver);
             }
             return ret;
@@ -410,7 +410,7 @@ i = i\n';
 
 <div class="block" style="position: relative">
     <div id="tip"></div>
-    <p>Move the cursor with your keyboard to active the whole parsing work flow.</p>
+    <p>Move the cursor with your keyboard to active the autocomplete hint.</p>
    <div id="editor">
 some_identifier;
 var foo = function(){};
