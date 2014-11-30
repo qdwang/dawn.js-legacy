@@ -5,7 +5,7 @@ if typeof self == 'undefined'
     Zipper = require './../src/Zipper.js'
     IR = require './../src/IR.js'
     SymbolTable = require './../src/symbol-table.js'
-    ulti = require './../src/ulti.js'
+    util = require './../src/util.js'
     localService = require './../src/services/local.js'
     Flow = require './../src/flow.js'
     CodeGen = require './../src/code-gen.js'
@@ -28,23 +28,23 @@ else
     SyntaxTable = self.SyntaxTable
     Zipper = self.Zipper
     SymbolTable = self.SymbolTable
-    ulti = self.ulti
+    util = self.util
 
-log = ulti.log
-stringEqual = ulti.stringEqual
+log = util.log
+stringEqual = util.stringEqual
 
-if not ulti.indexedDBRead
+if not util.indexedDBRead
     home = process.env.USERPROFILE or process.env.HOME
     dawnjs_dir = home + '/.dawnjs/'
     cache_dir = dawnjs_dir + 'cache/'
 
 
-### Ulti ###
+### Util ###
 sample_obj = {S: {E: ['a', 'b', 'c', 'd'], A: {B: 5}}, C: 'foo'}
-log (ulti.objDotAccessor sample_obj, 'S.E.0') == 'a', 'objDotAccessor 1'
-log (ulti.objDotAccessor sample_obj, 'C') == 'foo', 'objDotAccessor 2'
-log (ulti.objDotAccessor sample_obj, 'S.A.B') == 5, 'objDotAccessor 3'
-log (ulti.objDotAccessor sample_obj, 'S.E.2') == 'c', 'objDotAccessor 4'
+log (util.objDotAccessor sample_obj, 'S.E.0') == 'a', 'objDotAccessor 1'
+log (util.objDotAccessor sample_obj, 'C') == 'foo', 'objDotAccessor 2'
+log (util.objDotAccessor sample_obj, 'S.A.B') == 5, 'objDotAccessor 3'
+log (util.objDotAccessor sample_obj, 'S.E.2') == 'c', 'objDotAccessor 4'
 
 
 ### BNF ###
@@ -423,7 +423,7 @@ zipperNodeTest = ->
 
 zipperNodeTest()
 
-plain_tree = ulti.toObjString ast.syntax_tree
+plain_tree = util.toObjString ast.syntax_tree
 plain_tree = JSON.parse plain_tree
 
 SyntaxParser.rebuild plain_tree
@@ -698,7 +698,7 @@ lr1_parser_mm = ls.get (__dirname + '/../src/LR1-parser.js'), 'mm', (res) ->
     ls_mm = res
     cb()
 
-### ulti.dump / load ###
+### util.dump / load ###
 
 G = """
 S -> E
@@ -722,7 +722,7 @@ state.parseTable table
 
 ast = state.getAST []
 
-if ulti.indexedDBRead
+if util.indexedDBRead
     indexedDB.deleteDatabase 'dawn.js'
 else
     fs = require 'fs'
@@ -730,14 +730,14 @@ else
     if fs.existsSync sample_ast_file
         fs.unlinkSync sample_ast_file
 
-ulti.dump 'ast', 'sample_ast', {}
-ulti.dump 'ast', 'sample_ast', ast.syntax_tree # test cover
-ulti.dump 'lex', 'sample_lex', sampleLex
+util.dump 'ast', 'sample_ast', {}
+util.dump 'ast', 'sample_ast', ast.syntax_tree # test cover
+util.dump 'lex', 'sample_lex', sampleLex
 
-ulti.load 'ast', 'sample_ast', (res) ->
+util.load 'ast', 'sample_ast', (res) ->
     SyntaxParser.rebuild res, mm
     ast.syntax_tree = res
-    ulti.load 'lex', 'sample_lex', (lex_res) ->
+    util.load 'lex', 'sample_lex', (lex_res) ->
         LexParser.rebuild lex_res, mm
         sampleLex = lex_res
 

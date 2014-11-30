@@ -3,11 +3,11 @@ Lex = require './../src/lex-parser.js'
 LR1 = require './../src/LR1-parser.js'
 IR = require './../src/IR.js'
 ST = require './../src/symbol-table.js'
-ulti = require './../src/ulti.js'
+util = require './../src/util.js'
 
 non_word = """./\()"':,.;<>~!@#$%^&*|+=[]{}`~?-"""
 
-log = ulti.log
+log = util.log
 
 script = """
 abc.e(fe,gge)

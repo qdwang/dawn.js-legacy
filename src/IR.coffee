@@ -1,7 +1,7 @@
 if typeof self == 'undefined'
-    ulti = require './ulti.js'
+    util = require './util.js'
 else
-    ulti = self.ulti
+    util = self.util
 
 
 MixMap  = ->
@@ -93,4 +93,4 @@ else
 
 log = ->
 #return
-log = ulti.log
+log = util.log

@@ -1,4 +1,4 @@
-importScripts './../../src/ulti.js'
+importScripts './../../src/util.js'
 importScripts './../../src/BNF-parser.js'
 importScripts './../../src/IR.js'
 importScripts './../../src/Zipper.js'

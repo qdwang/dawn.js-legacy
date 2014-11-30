@@ -2,7 +2,7 @@
 (function() {
   var getObjectName, grammar, lex_syntax, markers, parseFlow;
 
-  importScripts('./../../src/ulti.js');
+  importScripts('./../../src/util.js');
 
   importScripts('./../../src/BNF-parser.js');
 

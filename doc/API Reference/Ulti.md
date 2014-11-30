@@ -1,48 +1,48 @@
-## Ulti
+## Util
 
-Ulti is a set of helpers
+Util is a set of helpers
 
 ### Definition
 
-#### ulti.uniquePush
+#### util.uniquePush
 push element to array if element is not in array
 ```
-ulti.uniquePush(
+util.uniquePush(
     array, -> array
     element -> object
 )
 ```
 
-#### ulti.uniqueConcat
+#### util.uniqueConcat
 uniquePush elements of array to another
 ```
-ulti.uniqueConcat(
+util.uniqueConcat(
     form array, -> array
     to another -> array
 )
 ```
 
-#### ulti.makeCombination
+#### util.makeCombination
 make combination of elements of array
 
 ```
 array = [[1,2], [3,4]]
 
-    -> ulti.makeCombination ->
+    -> util.makeCombination ->
 
 result = [[1,3], [1,4], [2,3], [2,4]]
 ```
 
 ```
-ulti.makeCombintaion(
+util.makeCombintaion(
     one level nested array -> array
 )
 ```
 
-#### ulti.stripEmptyOfList
+#### util.stripEmptyOfList
 strip empty of list recursively
 ```
-ulti.stripEmptyOfList(
+util.stripEmptyOfList(
     list -> array
 )
 ```
@@ -53,31 +53,31 @@ access object with string path
 ```
 A = {foo: {bar: 1}}
 
-ulti.objDotAccessor(A, 'foo.bar') // get 1
+util.objDotAccessor(A, 'foo.bar') // get 1
 ```
 
 ```
-ulti.objDotAccessor(
+util.objDotAccessor(
     object, -> object
     path string with dot -> string
 )
 ```
 
-#### ulti.toObjString
+#### util.toObjString
 make JSON.stringify compatible with circulate reference
 
 ```
-ulti.toObjString(
+util.toObjString(
     object with circulate reference -> object
     format indent -> number
 )
 ```
 
-#### ulti.dump
+#### util.dump
 dump object to ~/.dawnjs/cache/ or indexedDB of WebBrowser
 
 ```
-ulti.dump(
+util.dump(
     type of object, -> string
     unique file key name, -> string
     object -> object
@@ -85,61 +85,61 @@ ulti.dump(
 ```
 
 
-#### ulti.load
+#### util.load
 load object from ~/.dawnjs/cache/ or indexedDB of WebBrowser
 
 ```
-ulti.load(
+util.load(
     type of object, -> string
     unique file key name, -> string
     callback with returned object -> function
 )
 ```
 
-#### ulti.existLocalCache
+#### util.existLocalCache
 detect if exist dumped cache from ~/.dawnjs/cache/
 
 ```
-ulti.existLocalCache(
+util.existLocalCache(
     type of object, -> string
     unique file key name -> string
 )
 ```
 
 
-#### ulti.log
+#### util.log
 log method for debug
 
 ```
-ulti.log(
+util.log(
     content, -> object
     mark ,-> string
     indent (default 4) -> number
 )
 ```
 
-#### ulti.stringEqual
+#### util.stringEqual
 detect if two object if equal in string form
 ```
-ulti.stringEqual(
+util.stringEqual(
     source object, -> object
     target object, -> object
     mark -> string
 )
 ```
 
-#### ulti.jsonClone
+#### util.jsonClone
 clone object with JSON.stringify and JSON.parse
 ```
-ulti.jsonClone(
+util.jsonClone(
     object -> object
 )
 ```
 
-#### ulti.fileWalk
+#### util.fileWalk
 walk directory recursively with handler
 ```
-ulti.fileWalk(
+util.fileWalk(
     root directory path, -> string
     handler -> function
 )
