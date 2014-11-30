@@ -1,6 +1,6 @@
 {
   "name": "dawn.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "General Transpiler implemented in JavaScript",
   "scripts": {
     "test": "test/test.js"
