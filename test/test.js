@@ -898,6 +898,48 @@
 
   log(CodeGen(js_grammar, ast, ['Function']) === "function ABC(x, y){\n    var a = x;\n    function CDE(o, p, z, t){\n        var q = o;\n        var w = p;\n    }\n    var b = y;\n}\nvar i = i;\n", "CodeGen 2");
 
+  lex_syntax = {
+    'String': /'.*?[^\\]'|".*?[^\\]"/,
+    'Dot': /\./,
+    'Func': /def/,
+    'Indent': /\ \ \ \ /,
+    'StmtEnd': /\n/,
+    'Colon': /\:/,
+    'Assign': /\=/,
+    'Pl': /\(/,
+    'Pr': /\)/,
+    'Comma': /\,/,
+    'Id': /[a-zA-Z_$][\w_$]*/
+  };
+
+  script = 'def ABC(x, y):\n    a = x\n    def CDE(o, p, z, t):\n        q = o\n        w = p\n\n    b = y\n\n    i = i\n';
+
+  grammar = "Program -> S+\nS -> Indent* SGO StmtEnd | Indent* StmtEnd | Indent* Function\nSGO -> Obj | StmtEnd | Assignment\nAssignment -> Receiver Assign Giver\nReceiver -> Obj\nGiver -> Obj | Function\nFunction -> Func Id Pl Args* Pr Colon S+ Dedent\nObj -> Id (Dot Id)* | Bl Br\nArgs -> Id (Comma Id)*";
+
+  args = {
+    script: script,
+    lex_syntax: lex_syntax,
+    make_dedent: 'Indent',
+    grammar: grammar,
+    start_stmt: ['Program'],
+    sync_lex: ['StmtEnd', 'ParseFail', 'S'],
+    mix_map: new MixMap,
+    ast_cutter: [],
+    scope_rules: ['Function']
+  };
+
+  flow = new Flow(args);
+
+  flow.append([LexParser.flow, SyntaxParser.flow]);
+
+  flow.finish();
+
+  ast = flow.result('ast');
+
+  js_grammar = 'Function -> "function " Id "(" Args* "){"\nAssignment -> "var " Receiver " = " Giver ";"\nDedent -> "}"\n:Args -> Id (", " Id)*\n:Receiver -> Id\n:Giver -> Id';
+
+  log(CodeGen(js_grammar, ast, ['Function']) === "function ABC(x, y){\n    var a = x;\n    function CDE(o, p, z, t){\n        var q = o;\n        var w = p;\n    }\n    var b = y;\n    var i = i;\n}\n", "CodeGen 3");
+
 }).call(this);
 
 //# sourceMappingURL=test.js.map

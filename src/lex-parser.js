@@ -118,6 +118,9 @@
         new_lex_list.push(lex);
       }
     }
+    if (last_indent > 0) {
+      new_lex_list.push([insert_lex, '    ']);
+    }
     this.lex_list = new_lex_list;
     return this;
   };
