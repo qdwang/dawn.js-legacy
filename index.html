@@ -86,7 +86,7 @@
         <div id="transpiler-js2py">// transcompile from javascript to python
 
 (function() {
-    script = '\
+    var script = '\
         function ABC(x, y){\n\
             var a = x;\n\
             function CDE(o, p, z, t){\n\
@@ -96,7 +96,7 @@
             var b = y;\n\
         }';
 
-    lex_syntax = {
+    var lex_syntax = {
         'String': /'.*?[^\\]'|".*?[^\\]"/,
         'Dot': /\./,
         'Func': /function/,
@@ -111,7 +111,7 @@
         'Id': /[a-zA-Z_$][\w_$]*/
     };
 
-    grammar = "\
+    var grammar = "\
                 Program -> S+\n\
                 S -> SGO StmtEnd | StmtEnd | Function\n\
                 SGO -> Obj | StmtEnd | Assignment\n\
@@ -123,7 +123,7 @@
                 Args -> Id (Comma Id)*";
 
 
-    args = {
+    var args = {
         script: script,
         lex_syntax: lex_syntax,
         grammar: grammar,
@@ -134,15 +134,15 @@
         scope_rules: ['Function']
     };
 
-    flow = new Flow(args);
+    var flow = new Flow(args);
 
     flow.append([LexParser.flow, SyntaxParser.flow]);
 
     flow.finish();
 
-    ast = flow.result('ast');
+    var ast = flow.result('ast');
 
-    python_grammar = '\
+    var python_grammar = '\
                 Function -> "def " Id "(" Args* "):"\n\
                 Assignment -> Receiver " = " Giver\n\
                 :Args -> Id (", " Id)*\n\
@@ -166,16 +166,16 @@
         <div id="transpiler-py2js">// transcompile from python to javascript
 
 (function() {
-    script = '\
-        def ABC(x, y):\n\
-            a = x\n\
-            def CDE(o, p, z, t):\n\
-                q = o\n\
-                w = p\n\n\
-            b = y\n\n\
-        i = i\n';
+    var script = '\
+def ABC(x, y):\n\
+    a = x\n\
+    def CDE(o, p, z, t):\n\
+        q = o\n\
+        w = p\n\n\
+    b = y\n\n\
+i = i\n';
 
-    lex_syntax = {
+    var lex_syntax = {
         'String': /'.*?[^\\]'|".*?[^\\]"/,
         'Dot': /\./,
         'Func': /def/,
@@ -190,7 +190,7 @@
     };
 
 
-    grammar = "\
+    var grammar = "\
                 Program -> S+\n\
                 S -> Indent* SGO StmtEnd | Indent* StmtEnd | Indent* Function\n\
                 SGO -> Obj | StmtEnd | Assignment\n\
@@ -201,7 +201,7 @@
                 Obj -> Id (Dot Id)* | Bl Br\n\
                 Args -> Id (Comma Id)*";
 
-    args = {
+    var args = {
         script: script,
         lex_syntax: lex_syntax,
         make_dedent: 'Indent',
@@ -213,15 +213,15 @@
         scope_rules: ['Function']
     };
 
-    flow = new Flow(args);
+    var flow = new Flow(args);
 
     flow.append([LexParser.flow, SyntaxParser.flow]);
 
     flow.finish();
 
-    ast = flow.result('ast');
+    var ast = flow.result('ast');
 
-    js_grammar = '\
+    var js_grammar = '\
                 Function -> "function " Id "(" Args* "){"\n\
                 Assignment -> "var " Receiver " = " Giver ";"\n\
                 Dedent -> "}"\n\
