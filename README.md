@@ -27,8 +27,7 @@ npm install dawn.js
 
 ## Demo
 
-* Checkout [object reference demo](http://dawnjs.org/demo)
-* More are coming soon...
+* [Link](http://dawnjs.org/#demo)
 
 ## Tutorial
 * Coming soon...
