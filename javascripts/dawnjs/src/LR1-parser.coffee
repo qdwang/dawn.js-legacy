@@ -1,10 +1,10 @@
 if typeof self == 'undefined'
-    ulti = require './ulti.js'
+    util = require './util.js'
     IR = require './IR.js'
     BNFParser = require './BNF-parser.js'
     BNFGrammar = BNFParser.BNFGrammar
 else
-    ulti = self.ulti
+    util = self.util
     IR = self.IR
     BNFGrammar = self.BNFGrammar
 
@@ -163,15 +163,15 @@ SyntaxTable::expand = (expand_level, ristrict) ->
                     if x['repr'].length
                         first_lex = x['repr'][0]
                         first_lex = if BNFGrammar.isOneOrMore first_lex then BNFGrammar.removeSpecialMark first_lex else first_lex
-                        ulti.uniqueConcat end_lex, @grammar_dict.findFirst first_lex
+                        util.uniqueConcat end_lex, @grammar_dict.findFirst first_lex
 
                     else
-                        ulti.uniqueConcat end_lex, @end_lex
-                        ulti.uniqueConcat end_lex, x['end_lex']
+                        util.uniqueConcat end_lex, @end_lex
+                        util.uniqueConcat end_lex, x['end_lex']
 
 
                     if @live_grammars[closure].repeat
-                        ulti.uniqueConcat end_lex, @grammar_dict.findFirst closure
+                        util.uniqueConcat end_lex, @grammar_dict.findFirst closure
 
                     closure_id = closure + end_lex.join ''
                     if closure_id in expanded_closures
@@ -185,7 +185,7 @@ SyntaxTable::expand = (expand_level, ristrict) ->
                 firsts_closure = @initGrammar2Live closure, end_lex, expand_level
                 if ristrict
                     log firsts_closure, 'firsts_closure'
-                    ulti.uniqueConcat ristrict, firsts_closure
+                    util.uniqueConcat ristrict, firsts_closure
 
         if last_ec_len == expanded_closures.length
             break
@@ -235,7 +235,7 @@ GrammarDict::makeFirstSets = ->
             if repr[0] of @dict_map
                 getFirst.call @, repr[0], first_set, pushed_closures
             else
-                ulti.uniquePush first_set, repr[0]
+                util.uniquePush first_set, repr[0]
 
     for closure_key of @dict_map
         closure = @dict_map[closure_key]
@@ -250,9 +250,9 @@ GrammarDict::findFirst = (closures) ->
     ret = []
     for closure in closures
         if closure not of @dict_map
-            ulti.uniquePush ret, closure
+            util.uniquePush ret, closure
         else
-            ulti.uniqueConcat ret, @dict_map[closure]['first']
+            util.uniqueConcat ret, @dict_map[closure]['first']
 
     ret
 
@@ -453,7 +453,7 @@ SyntaxParser.checkIfReduce.getCachedIndex = (stack) ->
 
 
 # Not For Use
-SyntaxParser::multiReverseReduce = (syntax_table) ->
+SyntaxParser::mutilReverseReduce = (syntax_table) ->
     for i in [1..@stack.length]
         syntax_table.init()
         result = SyntaxParser.checkIfReduce syntax_table, (@stack.slice -i), @input_lex[0]
@@ -466,7 +466,7 @@ SyntaxParser::multiReverseReduce = (syntax_table) ->
                 break
 
 # Not For Use
-SyntaxParser::MultiReduce = (syntax_table) ->
+SyntaxParser::MutilReduce = (syntax_table) ->
     for i in [0..@stack.length - 1]
         syntax_table.init()
 
@@ -565,4 +565,4 @@ else
 
 log = ->
 return
-log = ulti.log
+log = util.log

@@ -1,11 +1,11 @@
-ulti =
+util =
     uniquePush: (arr, elem) ->
         if elem not in arr
             arr.push elem
 
     uniqueConcat: (arr, elem_arr) ->
         for i in elem_arr
-            ulti.uniquePush arr, i
+            util.uniquePush arr, i
 
 
     makeCombination: (lists) ->
@@ -30,7 +30,7 @@ ulti =
         ret = []
         for item, i in list
             if item instanceof Array
-                ret.push ulti.stripEmptyOfList item
+                ret.push util.stripEmptyOfList item
             else
                 if item
                     ret.push item
@@ -74,13 +74,13 @@ ulti =
                 if item['__MixMapID__']
                     item.push '__MixMapID__' + item['__MixMapID__']
 
-        if ulti.indexedDBWrite
-            ulti.indexedDBWrite type, {key: file_key + '.' + type, query: ulti.toObjString obj}
+        if util.indexedDBWrite
+            util.indexedDBWrite type, {key: file_key + '.' + type, query: util.toObjString obj}
         else
             fs = require 'fs'
 
             key = file_key
-            obj = ulti.toObjString obj
+            obj = util.toObjString obj
 
             home = process.env.USERPROFILE or process.env.HOME
             dawnjs_dir = home + '/.dawnjs/'
@@ -100,8 +100,8 @@ ulti =
                 if item.length == 3 and item[2].indexOf('__MixMapID__') == 0
                     item['__MixMapID__'] = parseInt(item.pop().replace '__MixMapID__', '')
 
-        if ulti.indexedDBRead
-            ulti.indexedDBRead type, file_key, (res) ->
+        if util.indexedDBRead
+            util.indexedDBRead type, file_key, (res) ->
                 res = JSON.parse res.query
                 if res instanceof Array
                     lex_file_rebuild res
@@ -122,7 +122,7 @@ ulti =
 
                     callback res
             else
-                ulti.log 'file not exist: ' + file_key
+                util.log 'file not exist: ' + file_key
 
     existLocalCache: (type, file_key) ->
         fs = require 'fs'
@@ -135,7 +135,7 @@ ulti =
 
     log: (x, mark, indent = 4) ->
         surfix = ' - ' + if mark then mark else ''
-        result = ulti.toObjString(x, indent) + surfix
+        result = util.toObjString(x, indent) + surfix
         console.log result
         result
 
@@ -156,7 +156,7 @@ ulti =
             data = data.trim().replace /E![\w0-9]+/g, '!ReprMark!'
 
         result = toStr(source) == toStr(target)
-        ulti.log result, unit or ''
+        util.log result, unit or ''
 
     jsonClone: (json_obj) ->
         JSON.parse JSON.stringify json_obj
@@ -168,7 +168,7 @@ ulti =
         ls = fs.readdirSync root_dir
         for name in ls
             if fs.lstatSync(root_dir + name).isDirectory()
-                ulti.fileWalk root_dir + name + '/', handler
+                util.fileWalk root_dir + name + '/', handler
             else
                 handler root_dir + name
 
@@ -193,14 +193,14 @@ ulti =
             objectStore = db.createObjectStore type, {keyPath: 'key'}
 
         req.onerror = (e) ->
-            ulti.log 'IndexedDB Error: ' + e.target.errorCode
+            util.log 'IndexedDB Error: ' + e.target.errorCode
 
-    ulti.indexedDBRead = (type, key, callback) ->
+    util.indexedDBRead = (type, key, callback) ->
         workDB type, (os) ->
             os.get(key + '.' + type).onsuccess = (e) ->
                 callback e.target.result
 
-    ulti.indexedDBWrite = (type, obj, callback) ->
+    util.indexedDBWrite = (type, obj, callback) ->
         workDB type, (os) ->
             add_os_req = os.put obj
 
@@ -209,14 +209,14 @@ ulti =
 )()
 
 #for dump load test
-#ulti.dump 'ast', 'abc', 'afbcdefg'
+#util.dump 'ast', 'abc', 'afbcdefg'
 #setTimeout (->
-#    ulti.load 'ast', 'abc', (res) ->
+#    util.load 'ast', 'abc', (res) ->
 #        console.log res
 #), 1000
 
 if typeof self == 'undefined'
-    for i of ulti
-        module.exports[i] = ulti[i]
+    for i of util
+        module.exports[i] = util[i]
 else
-    self.ulti = ulti
+    self.util = util

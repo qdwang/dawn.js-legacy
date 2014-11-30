@@ -1,7 +1,7 @@
 if typeof self == 'undefined'
-    ulti = require './ulti.js'
+    util = require './util.js'
 else
-    ulti = self.ulti
+    util = self.util
 
 
 BNFGrammar = (bnf_raw_content) ->
@@ -89,7 +89,7 @@ BNFGrammar::makePlainBNF = (stop) ->
             else
                 lexes[i] = [lex]
 
-        ret.reprs = ulti.stripEmptyOfList ulti.makeCombination lexes
+        ret.reprs = util.stripEmptyOfList util.makeCombination lexes
         ret.reprs = ret.reprs.map (x) -> x.join ' '
 
         ret
@@ -125,4 +125,4 @@ else
 
 log = ->
 #return
-log = ulti.log
+log = util.log

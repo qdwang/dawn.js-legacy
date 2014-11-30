@@ -1,8 +1,8 @@
 if typeof self == 'undefined'
-    ulti = require './ulti.js'
+    util = require './util.js'
     IR = require './IR.js'
 else
-    ulti = self.ulti
+    util = self.util
     IR = self.IR
 
 
@@ -164,4 +164,4 @@ else
 
 log = ->
 #return
-log = ulti.log
+log = util.log

@@ -1,9 +1,9 @@
 if typeof self == 'undefined'
-    ulti = require './ulti.js'
+    util = require './util.js'
     Zipper = require './Zipper.js'
     Zipper = Zipper.Zipper
 else
-    ulti = self.ulti
+    util = self.util
     Zipper = self.Zipper
 
 

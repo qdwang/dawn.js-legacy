@@ -17,7 +17,7 @@
 
       <script src="javascripts/vendors/ace/ace.js"></script>
 
-      <script src="javascripts/dawnjs/src/ulti.js"></script>
+      <script src="javascripts/dawnjs/src/util.js"></script>
       <script src="javascripts/dawnjs/src/flow.js"></script>
       <script src="javascripts/dawnjs/src/BNF-parser.js"></script>
       <script src="javascripts/dawnjs/src/lex-parser.js"></script>
@@ -252,7 +252,7 @@ i = i\n';
     /* On your own service, you can run your script under Web Worker.
        It's much faster and will not block the browser UI thread.
 
-    importScripts './../../src/ulti.js'
+    importScripts './../../src/util.js'
     importScripts './../../src/BNF-parser.js'
     importScripts './../../src/IR.js'
     importScripts './../../src/Zipper.js'
@@ -362,7 +362,7 @@ i = i\n';
         // from cursor_lex get related AST node
         curr_ast_node = mm.get(cursor_lex, 'SyntaxNode');
 
-        // Zipper is a ultility for navigating trees
+        // Zipper is a utility for navigating trees
         curr_obj_node = self.Zipper.findParent({lex: 'Obj'}, curr_ast_node);
         scope_node = self.Zipper.findParent({lex: 'Function'}, curr_ast_node);
 
